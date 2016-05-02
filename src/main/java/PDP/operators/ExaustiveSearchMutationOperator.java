@@ -16,7 +16,7 @@ import PDP.fitness.FitnessFunction;
  *
  * @author vfontoura
  */
-public class ExaustiveSearchMutationOperator {
+public class ExaustiveSearchMutationOperator extends MutationOperator {
 
 	private Random rng;
 
@@ -34,6 +34,7 @@ public class ExaustiveSearchMutationOperator {
 		this.sequence = sequence;
 	}
 
+	@Override
 	public int[] apply(int[] parent) {
 		if (this.rng.nextDouble() < probability) {
 			int[] offspring = Arrays.copyOf(parent, parent.length);

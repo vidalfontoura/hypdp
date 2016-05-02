@@ -16,6 +16,15 @@ import AbstractClasses.ProblemDomain;
 import PDP.fitness.FitnessFunction;
 import PDP.fitness.Residue;
 import PDP.fitness.Residue.Point;
+import PDP.operators.CrossoverOperator;
+import PDP.operators.ExaustiveSearchMutationOperator;
+import PDP.operators.LocalMoveOperator;
+import PDP.operators.LoopMoveOperator;
+import PDP.operators.MultiPointsCrossover;
+import PDP.operators.MutationOperator;
+import PDP.operators.OppositeMoveOperator;
+import PDP.operators.SegmentMutationOperator;
+import PDP.operators.TwoPointsCrossover;
 
 /**
  *
@@ -27,18 +36,16 @@ public class PDP extends ProblemDomain {
 	private static final String BASE_SEQUENCES_PATH = "data" + File.separator + "pdp" + File.separator + "sq%s.txt";
 
 	// TODO: Give ids later from the heuristics
-	private final int[] mutations = new int[] { 0, 3, 5 };
+	private final int[] mutations = new int[] { 4, 5, 6 };
 	private final int[] ruinRecreates = new int[] {};
-	private final int[] localSearches = new int[] { 4, 6 };
-	private final int[] crossovers = new int[] { 7 };
+	private final int[] localSearches = new int[] { 2, 3 };
+	private final int[] crossovers = new int[] { 0, 1 };
 
 	private String sequence;
 
 	private PDPSolution[] memoryMechanism;
 
 	private int numberOfVariables;
-
-	private HPModel model;
 
 	private int upperBound;
 
@@ -50,7 +57,6 @@ public class PDP extends ProblemDomain {
 
 	public PDP(long seed, HPModel model, double alpha, double beta) {
 		super(seed);
-		this.model = model;
 
 		switch (model) {
 		case TWO_DIMENSIONAL:
@@ -157,15 +163,79 @@ public class PDP extends ProblemDomain {
 
 	@Override
 	public double applyHeuristic(int heuristicID, int solutionSourceIndex, int solutionDestinationIndex) {
-		// TODO Auto-generated method stub
-		return 0;
+
+		MutationOperator operator = null;
+		switch (heuristicID) {
+		case 2: {
+			operator = new LocalMoveOperator(rng, 1.0);
+			break;
+		}
+		case 3: {
+			operator = new LoopMoveOperator(rng, 1.0);
+			break;
+		}
+		case 4: {
+			operator = new OppositeMoveOperator(rng, 1.0);
+			break;
+		}
+		case 5: {
+			operator = new SegmentMutationOperator(rng, 1.0);
+			break;
+		}
+		case 6: {
+			operator = new ExaustiveSearchMutationOperator(rng, 1.0, sequence, fitnessFunction);
+			break;
+		}
+		default: {
+			System.err.println("Unknown heuristic id: " + heuristicID);
+			System.exit(1);
+		}
+
+		}
+
+		int[] parent1 = memoryMechanism[solutionSourceIndex].getVariables();
+
+		int[] offspring = operator.apply(parent1);
+		PDPSolution pdpSolution = new PDPSolution(offspring.length);
+		pdpSolution.setVariables(offspring);
+		memoryMechanism[solutionDestinationIndex] = pdpSolution;
+		double functionValue = getFunctionValue(solutionDestinationIndex);
+
+		return functionValue;
+
 	}
 
 	@Override
 	public double applyHeuristic(int heuristicID, int solutionSourceIndex1, int solutionSourceIndex2,
 			int solutionDestinationIndex) {
-		// TODO Auto-generated method stub
-		return 0;
+
+		CrossoverOperator crossoverOperator = null;
+		switch (heuristicID) {
+		case 0: {
+			crossoverOperator = new TwoPointsCrossover(rng, 1.0);
+			break;
+		}
+		case 1: {
+			crossoverOperator = new MultiPointsCrossover(rng, 1.0);
+			break;
+		}
+		default: {
+			System.err.println("Unknown heuristic id: " + heuristicID);
+			System.exit(1);
+		}
+
+		}
+
+		int[] parent1 = memoryMechanism[solutionSourceIndex1].getVariables();
+		int[] parent2 = memoryMechanism[solutionSourceIndex2].getVariables();
+
+		int[] offspring = crossoverOperator.apply(parent1, parent2)[0];
+		PDPSolution pdpSolution = new PDPSolution(offspring.length);
+		pdpSolution.setVariables(offspring);
+		memoryMechanism[solutionDestinationIndex] = pdpSolution;
+		double functionValue = getFunctionValue(solutionDestinationIndex);
+
+		return functionValue;
 	}
 
 	@Override
@@ -214,6 +284,7 @@ public class PDP extends ProblemDomain {
 		PDPSolution pdpSolution = memoryMechanism[solutionIndex];
 		double fitness = fitnessFunction.calculateFitness(sequence, pdpSolution.getVariables());
 		pdpSolution.setFitness(fitness);
+		return fitness;
 	}
 
 	@Override

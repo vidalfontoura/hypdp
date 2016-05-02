@@ -11,7 +11,7 @@ import java.util.Random;
  *
  * @author vfontoura
  */
-public class SegmentMutationOperator {
+public class SegmentMutationOperator extends MutationOperator {
 
 	private Random rng;
 
@@ -22,6 +22,7 @@ public class SegmentMutationOperator {
 		this.probability = probability;
 	}
 
+	@Override
 	public int[] apply(int[] source) {
 
 		int[] offspring = Arrays.copyOf(source, source.length);

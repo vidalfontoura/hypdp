@@ -11,7 +11,7 @@ import java.util.Random;
  *
  * @author vfontoura
  */
-public class LocalMoveOperator {
+public class LocalMoveOperator extends MutationOperator {
 
 	private Random rng;
 
@@ -22,6 +22,7 @@ public class LocalMoveOperator {
 		this.probability = probability;
 	}
 
+	@Override
 	public int[] apply(int[] parent1) {
 		int[] offspring = Arrays.copyOf(parent1, parent1.length);
 

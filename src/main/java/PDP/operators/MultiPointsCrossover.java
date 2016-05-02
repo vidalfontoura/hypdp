@@ -13,7 +13,7 @@ import java.util.Random;
  *
  * @author vfontoura
  */
-public class MultiPointsCrossover {
+public class MultiPointsCrossover extends CrossoverOperator {
 
 	private Random rng;
 

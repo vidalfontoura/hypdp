@@ -11,7 +11,7 @@ import java.util.Random;
  *
  * @author vfontoura
  */
-public class OppositeMoveOperator {
+public class OppositeMoveOperator extends MutationOperator {
 
 	private Random rng;
 
@@ -22,6 +22,7 @@ public class OppositeMoveOperator {
 		this.probability = probability;
 	}
 
+	@Override
 	public int[] apply(int[] parent1) {
 		int[] offspring = Arrays.copyOf(parent1, parent1.length);
 
