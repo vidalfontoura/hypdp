@@ -1,9 +1,6 @@
 package PDP;
 
-import com.google.common.collect.Lists;
-
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -33,7 +30,7 @@ import PDP.operators.TwoPointsCrossover;
  */
 public class PDP extends ProblemDomain {
 
-	private static final String BASE_SEQUENCES_PATH = "data" + File.separator + "pdp" + File.separator + "sq%s.txt";
+	private static final String BASE_SEQUENCES_PATH = "data" + "/" + "pdp" + "/" + "sq%s.txt";
 
 	// TODO: Give ids later from the heuristics
 	private final int[] mutations = new int[] { 4, 5, 6 };
@@ -69,7 +66,7 @@ public class PDP extends ProblemDomain {
 			System.err.println("Unknown hp model provided: " + model);
 			System.exit(1);
 		}
-		this.setMemorySize(10);
+		this.setMemorySize(102);
 		this.fitnessFunction = new FitnessFunction(alpha, beta);
 	}
 
@@ -187,7 +184,7 @@ public class PDP extends ProblemDomain {
 			break;
 		}
 		default: {
-			System.err.println("Unknown heuristic id: " + heuristicID);
+			System.err.println("Error occured unknown heuristic id: " + heuristicID);
 			System.exit(1);
 		}
 
@@ -220,7 +217,7 @@ public class PDP extends ProblemDomain {
 			break;
 		}
 		default: {
-			System.err.println("Unknown heuristic id: " + heuristicID);
+			System.err.println("Error occured unknown heuristic id: " + heuristicID);
 			System.exit(1);
 		}
 
@@ -283,6 +280,10 @@ public class PDP extends ProblemDomain {
 	public double getFunctionValue(int solutionIndex) {
 		PDPSolution pdpSolution = memoryMechanism[solutionIndex];
 		double fitness = fitnessFunction.calculateFitness(sequence, pdpSolution.getVariables());
+		if (fitness < bestSolutionValue) {
+			bestSolutionValue = fitness;
+			bestSolution = memoryMechanism[solutionIndex].copySolution();
+		}
 		pdpSolution.setFitness(fitness);
 		return fitness;
 	}
@@ -335,7 +336,10 @@ public class PDP extends ProblemDomain {
 				Point newPoint = new Point(directions[1], directions[2]);
 				boolean added = setNewPoint(points, newPoint);
 
-				List<Integer> movesUnvisited = Lists.newArrayList(0, 1, 2);
+				List<Integer> movesUnvisited = new ArrayList<>();
+				movesUnvisited.add(0);
+				movesUnvisited.add(1);
+				movesUnvisited.add(2);
 				while (!added) {
 					// TODO: CHeck this code
 					if (movesUnvisited.size() == 0) {

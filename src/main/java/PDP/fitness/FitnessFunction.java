@@ -35,7 +35,13 @@ public class FitnessFunction {
 
 		int collisionsCount = getCollisionsCount(residues);
 
-		return ((alpha * topologicalContacts) * -1) + (beta * collisionsCount);
+		if (collisionsCount > 0) {
+			return 0.0;
+		}
+		// return ((alpha * topologicalContacts) * -1) + (beta *
+		// collisionsCount);
+
+		return -topologicalContacts;
 
 	}
 
