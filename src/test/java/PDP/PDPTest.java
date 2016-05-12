@@ -20,7 +20,7 @@ public class PDPTest {
 
 	@Before
 	public void setup() {
-		pdp = new PDP(1L, HPModel.TWO_DIMENSIONAL, 1, 3);
+		pdp = new PDP(1L, HPModel.TWO_DIMENSIONAL, 1, 3, 10);
 	}
 
 	@Test

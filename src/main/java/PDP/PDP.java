@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -52,7 +53,7 @@ public class PDP extends ProblemDomain {
 
 	private PDPSolution bestSolution;
 
-	public PDP(long seed, HPModel model, double alpha, double beta) {
+	public PDP(long seed, HPModel model, double alpha, double beta, int memorySize) {
 		super(seed);
 
 		switch (model) {
@@ -66,7 +67,7 @@ public class PDP extends ProblemDomain {
 			System.err.println("Unknown hp model provided: " + model);
 			System.exit(1);
 		}
-		this.setMemorySize(102);
+		this.setMemorySize(memorySize);
 		this.fitnessFunction = new FitnessFunction(alpha, beta);
 	}
 
@@ -262,7 +263,7 @@ public class PDP extends ProblemDomain {
 
 	@Override
 	public String bestSolutionToString() {
-		return bestSolution.getVariables().toString();
+		return Arrays.toString(bestSolution.getVariables());
 	}
 
 	@Override
@@ -310,8 +311,7 @@ public class PDP extends ProblemDomain {
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return null;
+		return "PDP";
 	}
 
 	private int[] repairSolution(String chain, int[] solution) {
