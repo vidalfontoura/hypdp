@@ -1,7 +1,7 @@
 /*
  * Copyright 2015, Charter Communications, All rights reserved.
  */
-package PDP;
+package PDP.fitness;
 
 /**
  *

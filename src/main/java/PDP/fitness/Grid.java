@@ -1,4 +1,4 @@
-package PDP;
+package PDP.fitness;
 
 /**
  *

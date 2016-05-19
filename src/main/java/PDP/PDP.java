@@ -1,17 +1,28 @@
 package PDP;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import AbstractClasses.ProblemDomain;
-import PDP.Residue.Point;
+import PDP.fitness.FitnessFunction;
+import PDP.fitness.Residue;
+import PDP.fitness.Residue.Point;
+import PDP.operators.CrossoverOperator;
+import PDP.operators.ExaustiveSearchMutationOperator;
+import PDP.operators.LocalMoveOperator;
+import PDP.operators.LoopMoveOperator;
+import PDP.operators.MultiPointsCrossover;
+import PDP.operators.MutationOperator;
+import PDP.operators.OppositeMoveOperator;
+import PDP.operators.SegmentMutationOperator;
+import PDP.operators.TwoPointsCrossover;
 
 /**
  *
@@ -20,47 +31,32 @@ import PDP.Residue.Point;
  */
 public class PDP extends ProblemDomain {
 
-	private static final String BASE_SEQUENCES_PATH = "data" + File.separator + "pdp" + File.separator + "sq%s.txt";
+	private static final String BASE_SEQUENCES_PATH = "data" + "/" + "pdp" + "/" + "sq%s.txt";
 
 	// TODO: Give ids later from the heuristics
-	private final int[] mutations = new int[] { 0, 3, 5 };
+	private final int[] mutations = new int[] { 4, 5, 6 };
 	private final int[] ruinRecreates = new int[] {};
-	private final int[] localSearches = new int[] { 4, 6 };
-	private final int[] crossovers = new int[] { 7 };
+	private final int[] localSearches = new int[] { 2, 3 };
+	private final int[] crossovers = new int[] { 0, 1 };
 
 	private String sequence;
-
-	private double alpha;
-
-	private double beta;
 
 	private PDPSolution[] memoryMechanism;
 
 	private int numberOfVariables;
 
-	private HPModel model;
-
 	private int upperBound;
 
 	private double bestSolutionValue = Double.POSITIVE_INFINITY;
 
+	private FitnessFunction fitnessFunction;
+
 	private PDPSolution bestSolution;
 
-	public PDP(long seed, HPModel model) {
+	public PDP(long seed) {
 		super(seed);
-		this.model = model;
-
-		switch (model) {
-		case TWO_DIMENSIONAL:
-			upperBound = 3;
-			break;
-		case THREE_DIMENSIONAL:
-			upperBound = 6;
-			break;
-		default:
-			System.err.println("Unknown hp model provided: " + model);
-			System.exit(1);
-		}
+		upperBound = 3;
+		this.fitnessFunction = new FitnessFunction();
 	}
 
 	@Override
@@ -130,7 +126,11 @@ public class PDP extends ProblemDomain {
 		for (int i = 0; i < numberOfVariables; i++) {
 			variables[i] = this.rng.nextInt(upperBound);
 		}
-		pdpSolution.setVariables(variables);
+
+		int[] repairedSolution = repairSolution(sequence, variables);
+
+		pdpSolution.setVariables(repairedSolution);
+
 		memoryMechanism[index] = pdpSolution;
 
 		double functionValue = getFunctionValue(index);
@@ -149,15 +149,84 @@ public class PDP extends ProblemDomain {
 
 	@Override
 	public double applyHeuristic(int heuristicID, int solutionSourceIndex, int solutionDestinationIndex) {
-		// TODO Auto-generated method stub
-		return 0;
+
+		MutationOperator operator = null;
+		switch (heuristicID) {
+		case 2: {
+			operator = new LocalMoveOperator(rng, 1.0);
+			break;
+		}
+		case 3: {
+			operator = new LoopMoveOperator(rng, 1.0);
+			break;
+		}
+		case 4: {
+			operator = new OppositeMoveOperator(rng, 1.0);
+			break;
+		}
+		case 5: {
+			operator = new SegmentMutationOperator(rng, 1.0);
+			break;
+		}
+		case 6: {
+			operator = new ExaustiveSearchMutationOperator(rng, 1.0, sequence, fitnessFunction);
+			break;
+		}
+		default: {
+			System.err.println("Error occured unknown heuristic id: " + heuristicID);
+			System.exit(1);
+		}
+
+		}
+
+		int[] parent1 = memoryMechanism[solutionSourceIndex].getVariables();
+
+		int[] offspring = operator.apply(parent1);
+
+		offspring = repairSolution(sequence, offspring);
+		PDPSolution pdpSolution = new PDPSolution(offspring.length);
+		pdpSolution.setVariables(offspring);
+		memoryMechanism[solutionDestinationIndex] = pdpSolution;
+		double functionValue = getFunctionValue(solutionDestinationIndex);
+
+		return functionValue;
+
 	}
 
 	@Override
 	public double applyHeuristic(int heuristicID, int solutionSourceIndex1, int solutionSourceIndex2,
 			int solutionDestinationIndex) {
-		// TODO Auto-generated method stub
-		return 0;
+
+		CrossoverOperator crossoverOperator = null;
+		switch (heuristicID) {
+		case 0: {
+			crossoverOperator = new TwoPointsCrossover(rng, 1.0);
+			break;
+		}
+		case 1: {
+			crossoverOperator = new MultiPointsCrossover(rng, 1.0);
+			break;
+		}
+		default: {
+			System.err.println("Error occured unknown heuristic id: " + heuristicID);
+			System.exit(1);
+		}
+
+		}
+
+		int[] parent1 = memoryMechanism[solutionSourceIndex1].getVariables();
+		int[] parent2 = memoryMechanism[solutionSourceIndex2].getVariables();
+
+		int[] offspring = crossoverOperator.apply(parent1, parent2)[0];
+
+		offspring = repairSolution(sequence, offspring);
+
+		PDPSolution pdpSolution = new PDPSolution(offspring.length);
+		pdpSolution.setVariables(offspring);
+		memoryMechanism[solutionDestinationIndex] = pdpSolution;
+		double functionValue = getFunctionValue(solutionDestinationIndex);
+
+		return functionValue;
 	}
 
 	@Override
@@ -187,7 +256,7 @@ public class PDP extends ProblemDomain {
 
 	@Override
 	public String bestSolutionToString() {
-		return bestSolution.getVariables().toString();
+		return Arrays.toString(bestSolution.getVariables());
 	}
 
 	@Override
@@ -198,20 +267,19 @@ public class PDP extends ProblemDomain {
 
 	@Override
 	public String solutionToString(int solutionIndex) {
-		return memoryMechanism[solutionIndex].getVariables().toString();
+		return Arrays.toString(memoryMechanism[solutionIndex].getVariables());
 	}
 
 	@Override
 	public double getFunctionValue(int solutionIndex) {
 		PDPSolution pdpSolution = memoryMechanism[solutionIndex];
-		List<Residue> residues = executeParse(sequence, pdpSolution.getVariables());
-		Grid grid = generateGrid(residues);
-
-		int topologicalContacts = getTopologyContacts(residues, grid).size();
-		int collisionsCount = getCollisionsCount(residues);
-
-		return (alpha * topologicalContacts) - (beta * collisionsCount);
-
+		double fitness = fitnessFunction.calculateFitness(sequence, pdpSolution.getVariables());
+		if (fitness < bestSolutionValue) {
+			bestSolutionValue = fitness;
+			bestSolution = memoryMechanism[solutionIndex].copySolution();
+		}
+		pdpSolution.setFitness(fitness);
+		return fitness;
 	}
 
 	@Override
@@ -236,200 +304,186 @@ public class PDP extends ProblemDomain {
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return null;
+		return "PDP";
 	}
 
-	private List<Residue> executeParse(String chain, int[] solution) {
+	public int[] repairSolution(String chain, int[] solution) {
 
-		int x = 0, y = 0, minX = 0, minY = 0, direction = 1;
-		int chainIndex = 0;
-
-		List<Residue> residues = new ArrayList<>();
 		Set<Point> points = new HashSet<>();
 
-		// Adiciona ponto inicial em (0,0) 1 Residuo
-		residues.add(new Residue(new Point(x, y), ResidueType.valueOf(String.valueOf(chain.charAt(0)))));
-		points.add(new Point(x, y));
-		chainIndex++;
+		int x = 0, y = 0;
+		int direction = 1;
 
-		// Se tem 2 ou mais Residuos
+		Point firstPoint = new Point(x, y);
+		setNewPoint(points, firstPoint);
+
 		if (chain.length() >= 2 && solution.length == chain.length() - 2) {
-
 			x++;
-			residues.add(new Residue(new Point(x, y), ResidueType.valueOf(String.valueOf(chain.charAt(1)))));
-			chainIndex++;
-			points.add(new Point(x, y));
+			Point secondPoint = new Point(x, y);
+			setNewPoint(points, secondPoint);
 
 			for (int i = 0; i < solution.length; i++) {
 				int step = solution[i];
-				switch (direction) {
-				case 0:// LOOKING UP
-					switch (step) {
-					case 0:
-						x--;
-						direction = 3;
-						break;
-					case 1:
-						y++;
-						direction = 0;
-						break;
-					case 2:
-						x++;
-						direction = 1;
-						break;
-					default:
-						// TODO Exception movimento invalido
+				int[] directions = getDirections(direction, step, x, y);
+
+				Point newPoint = new Point(directions[1], directions[2]);
+				boolean added = setNewPoint(points, newPoint);
+
+				List<Integer> movesUnvisited = new ArrayList<>();
+				movesUnvisited.add(0);
+				movesUnvisited.add(1);
+				movesUnvisited.add(2);
+				while (!added) {
+					// TODO: CHeck this code
+					if (movesUnvisited.size() == 0) {
 						break;
 					}
-					break;
-				case 1:// LOOKING FORWARD
-					switch (step) {
-					case 0:
-						y++;
-						direction = 0;
-						break;
-					case 1:
-						x++;
-						direction = 1;
-						break;
-					case 2:
-						y--;
-						direction = 2;
-						break;
-					default:
-						// TODO Exception movimento inv�lido
+					do {
+						step = this.rng.nextInt(this.upperBound);
+					} while (!movesUnvisited.contains(step));
+					movesUnvisited.remove(movesUnvisited.indexOf(step));
+
+					directions = getDirections(direction, step, x, y);
+
+					newPoint = new Point(directions[1], directions[2]);
+					added = setNewPoint(points, newPoint);
+					if (added) {
+						solution[i] = step;
 						break;
 					}
-					break;
-				case 2:// LOOKING DOWN
-					switch (step) {
-					case 0:
-						x++;
-						direction = 1;
-						break;
-					case 1:
-						y--;
-						direction = 2;
-						break;
-					case 2:
-						x--;
-						direction = 3;
-						break;
-					default:
-						// TODO Exception movimento inv�lido
-						break;
-					}
-					break;
-				case 3:// LOOKING BACK
-					switch (step) {
-					case 0:
-						y--;
-						direction = 2;
-						break;
-					case 1:
-						x--;
-						direction = 3;
-						break;
-					case 2:
-						y++;
-						direction = 0;
-						break;
-					default:
-						// TODO Exception movimento inv�lido
-						break;
-					}
-					break;
-				default:
-					break;
 				}
-				if (x < minX) {
-					minX = x;
-				}
-				if (y < minY) {
-					minY = y;
-				}
-				residues.add(
-						new Residue(new Point(x, y), ResidueType.valueOf(String.valueOf(chain.charAt(chainIndex++)))));
+
+				x = directions[1];
+				y = directions[2];
+				direction = directions[0];
 			}
 		}
+
+		return solution;
+	}
+
+	private boolean setNewPoint(Set<Point> points, Point newPoint) {
+
+		boolean ret = points.add(newPoint);
+		if (ret) {
+			points.add(newPoint);
+		}
+		return ret;
+	}
+
+	public List<Residue> translateToOrigin(List<Residue> residues) {
+
+		int minX = residues.get(0).getPoint().getX();
+		int minY = residues.get(0).getPoint().getY();
 		for (Residue residue : residues) {
-			residue.setPoint(new Residue.Point(residue.getPoint().x - minX + 1, residue.getPoint().y - minY + 1));
+			int x = residue.getPoint().getX();
+			int y = residue.getPoint().getY();
+			if (x < minX) {
+				minX = x;
+			}
+			if (y < minY) {
+				minY = y;
+			}
 		}
-		return residues;
+
+		List<Residue> changed = new ArrayList<Residue>();
+		for (Residue residue : residues) {
+			Point point = residue.getPoint();
+			int x = point.getX() - minX + 2;
+			int y = point.getY() - minY + 2;
+			Point newPoint = new Point(x, y);
+			Residue newResidue = new Residue();
+			newResidue.setResidueType(residue.getResidueType());
+			newResidue.setPoint(newPoint);
+			changed.add(newResidue);
+		}
+		return changed;
+
 	}
 
-	public Grid generateGrid(List<Residue> residues) {
+	private int[] getDirections(int direction, int step, int x, int y) {
 
-		Grid g = new Grid(residues.size() + 2, residues.size() + 2);
-		for (int i = 0; i < residues.size(); i++) {
-			g.getMatrix()[residues.get(i).getPoint().y][residues.get(i).getPoint().x] = i;
+		switch (direction) {
+		case 0:// LOOKING UP
+			switch (step) {
+			case 0:
+				x--;
+				direction = 3;
+				break;
+			case 1:
+				y++;
+				direction = 0;
+				break;
+			case 2:
+				x++;
+				direction = 1;
+				break;
+			default:
+				System.err.println("A invalid movement was provided: " + step);
+				System.exit(1);
+			}
+			break;
+		case 1:// LOOKING FORWARD
+			switch (step) {
+			case 0:
+				y++;
+				direction = 0;
+				break;
+			case 1:
+				x++;
+				direction = 1;
+				break;
+			case 2:
+				y--;
+				direction = 2;
+				break;
+			default:
+				System.err.println("A invalid movement was provided: " + step);
+				System.exit(1);
+			}
+			break;
+		case 2:// LOOKING DOWN
+			switch (step) {
+			case 0:
+				x++;
+				direction = 1;
+				break;
+			case 1:
+				y--;
+				direction = 2;
+				break;
+			case 2:
+				x--;
+				direction = 3;
+				break;
+			default:
+				System.err.println("A invalid movement was provided: " + step);
+				System.exit(1);
+			}
+			break;
+		case 3:// LOOKING BACK
+			switch (step) {
+			case 0:
+				y--;
+				direction = 2;
+				break;
+			case 1:
+				x--;
+				direction = 3;
+				break;
+			case 2:
+				y++;
+				direction = 0;
+				break;
+			default:
+				System.err.println("A invalid movement was provided: " + step);
+				System.exit(1);
+			}
+			break;
+		default:
+			break;
 		}
-		return g;
-	}
-
-	public Set<TopologyContact> getTopologyContacts(List<Residue> residues, Grid grid) {
-
-		Set<TopologyContact> topologyContacts = new HashSet<>();
-		int[][] matrix = grid.getMatrix();
-		int index = 0;
-		for (int i = 0; i < residues.size(); i++) {
-			if (residues.get(i).getResidueType().equals(ResidueType.P)) {
-				continue;
-			}
-			if (residues.get(i).getPoint().y + 1 < matrix.length) {
-				index = matrix[residues.get(i).getPoint().y + 1][residues.get(i).getPoint().x];
-				// test up
-				if (isTopologicalContact(i, index, residues)) {
-					topologyContacts.add(new TopologyContact(residues.get(i), residues.get(index)));
-				}
-			}
-			if (residues.get(i).getPoint().x + 1 < matrix.length) {
-				// test right
-				index = matrix[residues.get(i).getPoint().y][residues.get(i).getPoint().x + 1];
-				if (isTopologicalContact(i, index, residues)) {
-					topologyContacts.add(new TopologyContact(residues.get(i), residues.get(index)));
-				}
-			}
-			if (residues.get(i).getPoint().y - 1 >= 0) {
-				// test down
-				index = matrix[residues.get(i).getPoint().y - 1][residues.get(i).getPoint().x];
-				if (isTopologicalContact(i, index, residues)) {
-					topologyContacts.add(new TopologyContact(residues.get(i), residues.get(index)));
-				}
-			}
-			if (residues.get(i).getPoint().x - 1 >= 0) {
-				// test back
-				index = matrix[residues.get(i).getPoint().y][residues.get(i).getPoint().x - 1];
-				if (isTopologicalContact(i, index, residues)) {
-					topologyContacts.add(new TopologyContact(residues.get(i), residues.get(index)));
-				}
-			}
-
-		}
-		return topologyContacts;
-	}
-
-	public boolean isTopologicalContact(int i, int index, List<Residue> residues) {
-
-		if (i != index + 1 && i != index - 1 && index != -1) {
-
-			return residues.get(index).getResidueType().equals(ResidueType.H);
-		}
-		return false;
-	}
-
-	public int getCollisionsCount(List<Residue> residues) {
-
-		Set<Point> pointsSet = new HashSet<>();
-		int count = 0;
-		for (int i = 0; i < residues.size(); i++) {
-			boolean added = pointsSet.add(residues.get(i).getPoint());
-			if (!added) {
-				count++;
-			}
-		}
-		return count;
+		return new int[] { direction, x, y };
 	}
 
 	public String getInstance() {
