@@ -29,7 +29,7 @@ public class ExaustiveSearchMutationOperatorTest {
 	@Before
 	public void setup() {
 
-		fitnessFunction = new FitnessFunction(1, 5);
+		fitnessFunction = new FitnessFunction();
 		sequence = "HPHPPHHPHHPHPHHPPHPH";
 
 		random = new Random(1L);

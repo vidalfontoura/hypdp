@@ -10,7 +10,6 @@ import java.util.Map;
 
 import AbstractClasses.HyperHeuristic;
 import AbstractClasses.ProblemDomain;
-import PDP.HPModel;
 import PDP.PDP;
 import PDP.PDPSolution;
 
@@ -236,7 +235,7 @@ public class CFHH extends HyperHeuristic {
 		long timeLimit = 60000;
 
 		CFHH cfhh = new CFHH(seed, memorySize, 1.0, 0.0005);
-		PDP problem = new PDP(seed, HPModel.TWO_DIMENSIONAL, 1, 3, memorySize);
+		PDP problem = new PDP(seed);
 		problem.loadInstance(1);
 
 		cfhh.loadProblemDomain(problem);

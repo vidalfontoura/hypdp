@@ -7,7 +7,6 @@ import java.util.Arrays;
 
 import AbstractClasses.HyperHeuristic;
 import AbstractClasses.ProblemDomain;
-import PDP.HPModel;
 import PDP.PDP;
 import PDP.PDPSolution;
 
@@ -21,7 +20,7 @@ public class Example {
 	public static void main(String[] args) {
 		// create a ProblemDomain object with a seed for the random number
 		// generator
-		ProblemDomain problem = new PDP(2l, HPModel.TWO_DIMENSIONAL, 1, 3, 10);
+		ProblemDomain problem = new PDP(2l);
 
 		// creates an ExampleHyperHeuristic object with a seed for the random
 		// number generator

@@ -53,22 +53,10 @@ public class PDP extends ProblemDomain {
 
 	private PDPSolution bestSolution;
 
-	public PDP(long seed, HPModel model, double alpha, double beta, int memorySize) {
+	public PDP(long seed) {
 		super(seed);
-
-		switch (model) {
-		case TWO_DIMENSIONAL:
-			upperBound = 3;
-			break;
-		case THREE_DIMENSIONAL:
-			upperBound = 6;
-			break;
-		default:
-			System.err.println("Unknown hp model provided: " + model);
-			System.exit(1);
-		}
-		this.setMemorySize(memorySize);
-		this.fitnessFunction = new FitnessFunction(alpha, beta);
+		upperBound = 3;
+		this.fitnessFunction = new FitnessFunction();
 	}
 
 	@Override
@@ -194,6 +182,8 @@ public class PDP extends ProblemDomain {
 		int[] parent1 = memoryMechanism[solutionSourceIndex].getVariables();
 
 		int[] offspring = operator.apply(parent1);
+
+		offspring = repairSolution(sequence, offspring);
 		PDPSolution pdpSolution = new PDPSolution(offspring.length);
 		pdpSolution.setVariables(offspring);
 		memoryMechanism[solutionDestinationIndex] = pdpSolution;
@@ -228,6 +218,9 @@ public class PDP extends ProblemDomain {
 		int[] parent2 = memoryMechanism[solutionSourceIndex2].getVariables();
 
 		int[] offspring = crossoverOperator.apply(parent1, parent2)[0];
+
+		offspring = repairSolution(sequence, offspring);
+
 		PDPSolution pdpSolution = new PDPSolution(offspring.length);
 		pdpSolution.setVariables(offspring);
 		memoryMechanism[solutionDestinationIndex] = pdpSolution;
@@ -274,7 +267,7 @@ public class PDP extends ProblemDomain {
 
 	@Override
 	public String solutionToString(int solutionIndex) {
-		return memoryMechanism[solutionIndex].getVariables().toString();
+		return Arrays.toString(memoryMechanism[solutionIndex].getVariables());
 	}
 
 	@Override
@@ -314,7 +307,7 @@ public class PDP extends ProblemDomain {
 		return "PDP";
 	}
 
-	private int[] repairSolution(String chain, int[] solution) {
+	public int[] repairSolution(String chain, int[] solution) {
 
 		Set<Point> points = new HashSet<>();
 

@@ -17,13 +17,8 @@ import PDP.fitness.Residue.Point;
  */
 public class FitnessFunction {
 
-	private double alpha;
+	public FitnessFunction() {
 
-	private double beta;
-
-	public FitnessFunction(double alpha, double beta) {
-		this.alpha = alpha;
-		this.beta = beta;
 	}
 
 	public double calculateFitness(String chain, int[] solution) {

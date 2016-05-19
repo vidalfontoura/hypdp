@@ -20,7 +20,7 @@ public class PDPTest {
 
 	@Before
 	public void setup() {
-		pdp = new PDP(1L, HPModel.TWO_DIMENSIONAL, 1, 3, 10);
+		pdp = new PDP(1L);
 	}
 
 	@Test
@@ -154,8 +154,24 @@ public class PDPTest {
 	}
 
 	@Test
+	public void test() {
+		PDP pdp = new PDP(1l);
+
+		int[] repairSolution = pdp
+				.repairSolution("HHHHHHHHHHHHPHPHPPHHPPHHPPHPPHHPPHHPPHPPHHPPHHPPHPHPHHHHHHHHHHHH",
+						new int[] { 0, 0, 2, 2, 0, 0, 2, 2, 2, 1, 0, 0, 0, 0, 2, 0, 0, 1, 2, 0, 0, 1, 2, 0, 0, 2, 0, 0,
+								1, 2, 0, 0, 2, 2, 0, 0, 2, 0, 0, 2, 2, 0, 0, 2, 2, 0, 0, 2, 0, 2, 0, 0, 2, 2, 1, 2, 0,
+								1, 1, 2, 2, 1 });
+
+		System.out.println(Arrays.toString(repairSolution).replaceAll(" ", ""));
+
+	}
+
+	@Test
 	public void testFunctionValue() {
 		pdp.loadInstance(1);
+
+		pdp.setMemorySize(10);
 
 		// Init solution 0 and 1
 		pdp.initialiseSolution(0);
