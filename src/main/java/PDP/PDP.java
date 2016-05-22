@@ -18,10 +18,12 @@ import PDP.operators.CrossoverOperator;
 import PDP.operators.ExaustiveSearchMutationOperator;
 import PDP.operators.LocalMoveOperator;
 import PDP.operators.LoopMoveOperator;
+import PDP.operators.MultiGenesMutationOperator;
 import PDP.operators.MultiPointsCrossover;
-import PDP.operators.MutationOperator;
+import PDP.operators.MutationAndRuinRecreateOperator;
 import PDP.operators.OppositeMoveOperator;
-import PDP.operators.SegmentMutationOperator;
+import PDP.operators.SegmentRuinAndRecreateOperator;
+import PDP.operators.SwapSegmentsOperator;
 import PDP.operators.TwoPointsCrossover;
 
 /**
@@ -34,8 +36,8 @@ public class PDP extends ProblemDomain {
 	private static final String BASE_SEQUENCES_PATH = "data" + "/" + "pdp" + "/" + "sq%s.txt";
 
 	// TODO: Give ids later from the heuristics
-	private final int[] mutations = new int[] { 4, 5, 6 };
-	private final int[] ruinRecreates = new int[] {};
+	private final int[] mutations = new int[] { 4, 6, 7, 8 };
+	private final int[] ruinRecreates = new int[] { 5 };
 	private final int[] localSearches = new int[] { 2, 3 };
 	private final int[] crossovers = new int[] { 0, 1 };
 
@@ -150,7 +152,7 @@ public class PDP extends ProblemDomain {
 	@Override
 	public double applyHeuristic(int heuristicID, int solutionSourceIndex, int solutionDestinationIndex) {
 
-		MutationOperator operator = null;
+		MutationAndRuinRecreateOperator operator = null;
 		switch (heuristicID) {
 		case 2: {
 			operator = new LocalMoveOperator(rng, 1.0);
@@ -165,13 +167,22 @@ public class PDP extends ProblemDomain {
 			break;
 		}
 		case 5: {
-			operator = new SegmentMutationOperator(rng, 1.0);
+			operator = new SegmentRuinAndRecreateOperator(rng, 1.0);
 			break;
 		}
 		case 6: {
 			operator = new ExaustiveSearchMutationOperator(rng, 1.0, sequence, fitnessFunction);
 			break;
 		}
+		case 7: {
+			operator = new SwapSegmentsOperator(rng, 1.0);
+			break;
+		}
+		case 8: {
+			operator = new MultiGenesMutationOperator(rng, 1.0);
+			break;
+		}
+
 		default: {
 			System.err.println("Error occured unknown heuristic id: " + heuristicID);
 			System.exit(1);

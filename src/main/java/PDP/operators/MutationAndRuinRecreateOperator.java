@@ -8,7 +8,7 @@ package PDP.operators;
  *
  * @author vfontoura
  */
-public abstract class MutationOperator {
+public abstract class MutationAndRuinRecreateOperator {
 
 	public abstract int[] apply(int[] parent1);
 

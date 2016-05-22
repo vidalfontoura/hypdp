@@ -11,7 +11,7 @@ import java.util.Random;
  *
  * @author vfontoura
  */
-public class OppositeMoveOperator extends MutationOperator {
+public class OppositeMoveOperator extends MutationAndRuinRecreateOperator {
 
 	private Random rng;
 

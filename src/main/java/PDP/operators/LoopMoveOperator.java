@@ -11,7 +11,7 @@ import java.util.Random;
  *
  * @author vfontoura
  */
-public class LoopMoveOperator extends MutationOperator {
+public class LoopMoveOperator extends MutationAndRuinRecreateOperator {
 
 	private Random rng;
 
