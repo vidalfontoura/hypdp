@@ -35,7 +35,7 @@ public class BacktrackRepair {
 
 		this.sequenceLength = sequence.length();
 		solutionMoves = Lists.newArrayList();
-		this.grid = createGrid(sequenceLength);
+		this.grid = createGrid(sequenceLength * 2);
 		this.solution = solution;
 		this.movements = Lists.newArrayList(2, 1, 0);
 
@@ -57,8 +57,6 @@ public class BacktrackRepair {
 	}
 
 	private boolean move(int movement, int x, int y, String lookingAxis) {
-
-		System.out.println(x + "," + y);
 
 		String localLookingAxis = lookingAxis;
 

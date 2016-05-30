@@ -31,7 +31,6 @@ public class SwapSegmentsOperator extends MutationAndRuinRecreateOperator {
 		if (this.rng.nextDouble() < probability) {
 
 			int numberOfSegments = (int) Math.round(parent1.length * 0.1);
-			System.out.println(numberOfSegments);
 
 			int indexCut = length / numberOfSegments;
 			int lengthOfSegmnet = length / numberOfSegments;
@@ -63,7 +62,6 @@ public class SwapSegmentsOperator extends MutationAndRuinRecreateOperator {
 
 			int count = 0;
 			for (int i = 0; i < segments.length; i++) {
-				System.out.println(Arrays.toString(segments[i]));
 				for (int j = 0; j < segments[i].length; j++) {
 					offspring[count] = segments[i][j];
 					count++;
