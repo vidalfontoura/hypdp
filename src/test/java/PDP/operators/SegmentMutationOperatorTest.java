@@ -18,7 +18,7 @@ import junit.framework.Assert;
  */
 public class SegmentMutationOperatorTest {
 
-	private SegmentMutationOperator operator;
+	private SegmentRuinAndRecreateOperator operator;
 
 	private Random random;
 
@@ -26,7 +26,7 @@ public class SegmentMutationOperatorTest {
 	public void setup() {
 
 		random = new Random(1L);
-		operator = new SegmentMutationOperator(random, 1.0);
+		operator = new SegmentRuinAndRecreateOperator(random, 1.0);
 	}
 
 	@Test

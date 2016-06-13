@@ -11,13 +11,13 @@ import java.util.Random;
  *
  * @author vfontoura
  */
-public class SegmentMutationOperator extends MutationOperator {
+public class SegmentRuinAndRecreateOperator extends MutationAndRuinRecreateOperator {
 
 	private Random rng;
 
 	private double probability;
 
-	public SegmentMutationOperator(Random rng, double probability) {
+	public SegmentRuinAndRecreateOperator(Random rng, double probability) {
 		this.rng = rng;
 		this.probability = probability;
 	}

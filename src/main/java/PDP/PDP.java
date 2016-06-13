@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -18,10 +17,12 @@ import PDP.operators.CrossoverOperator;
 import PDP.operators.ExaustiveSearchMutationOperator;
 import PDP.operators.LocalMoveOperator;
 import PDP.operators.LoopMoveOperator;
+import PDP.operators.MultiGenesMutationOperator;
 import PDP.operators.MultiPointsCrossover;
-import PDP.operators.MutationOperator;
+import PDP.operators.MutationAndRuinRecreateOperator;
 import PDP.operators.OppositeMoveOperator;
-import PDP.operators.SegmentMutationOperator;
+import PDP.operators.SegmentRuinAndRecreateOperator;
+import PDP.operators.SwapSegmentsOperator;
 import PDP.operators.TwoPointsCrossover;
 
 /**
@@ -34,8 +35,8 @@ public class PDP extends ProblemDomain {
 	private static final String BASE_SEQUENCES_PATH = "data" + "/" + "pdp" + "/" + "sq%s.txt";
 
 	// TODO: Give ids later from the heuristics
-	private final int[] mutations = new int[] { 4, 5, 6 };
-	private final int[] ruinRecreates = new int[] {};
+	private final int[] mutations = new int[] { 4, 6, 7, 8 };
+	private final int[] ruinRecreates = new int[] { 5 };
 	private final int[] localSearches = new int[] { 2, 3 };
 	private final int[] crossovers = new int[] { 0, 1 };
 
@@ -144,13 +145,13 @@ public class PDP extends ProblemDomain {
 
 	@Override
 	public int getNumberOfHeuristics() {
-		return 7;
+		return 9;
 	}
 
 	@Override
 	public double applyHeuristic(int heuristicID, int solutionSourceIndex, int solutionDestinationIndex) {
 
-		MutationOperator operator = null;
+		MutationAndRuinRecreateOperator operator = null;
 		switch (heuristicID) {
 		case 2: {
 			operator = new LocalMoveOperator(rng, 1.0);
@@ -165,13 +166,22 @@ public class PDP extends ProblemDomain {
 			break;
 		}
 		case 5: {
-			operator = new SegmentMutationOperator(rng, 1.0);
+			operator = new SegmentRuinAndRecreateOperator(rng, 1.0);
 			break;
 		}
 		case 6: {
 			operator = new ExaustiveSearchMutationOperator(rng, 1.0, sequence, fitnessFunction);
 			break;
 		}
+		case 7: {
+			operator = new SwapSegmentsOperator(rng, 1.0);
+			break;
+		}
+		case 8: {
+			operator = new MultiGenesMutationOperator(rng, 1.0);
+			break;
+		}
+
 		default: {
 			System.err.println("Error occured unknown heuristic id: " + heuristicID);
 			System.exit(1);
@@ -309,57 +319,18 @@ public class PDP extends ProblemDomain {
 
 	public int[] repairSolution(String chain, int[] solution) {
 
-		Set<Point> points = new HashSet<>();
+		BacktrackRepair backtrackRepair = new BacktrackRepair(chain, solution);
 
-		int x = 0, y = 0;
-		int direction = 1;
+		backtrackRepair.start();
 
-		Point firstPoint = new Point(x, y);
-		setNewPoint(points, firstPoint);
+		List<Integer> solutionMoves = backtrackRepair.getSolutionMoves();
 
-		if (chain.length() >= 2 && solution.length == chain.length() - 2) {
-			x++;
-			Point secondPoint = new Point(x, y);
-			setNewPoint(points, secondPoint);
-
-			for (int i = 0; i < solution.length; i++) {
-				int step = solution[i];
-				int[] directions = getDirections(direction, step, x, y);
-
-				Point newPoint = new Point(directions[1], directions[2]);
-				boolean added = setNewPoint(points, newPoint);
-
-				List<Integer> movesUnvisited = new ArrayList<>();
-				movesUnvisited.add(0);
-				movesUnvisited.add(1);
-				movesUnvisited.add(2);
-				while (!added) {
-					// TODO: CHeck this code
-					if (movesUnvisited.size() == 0) {
-						break;
-					}
-					do {
-						step = this.rng.nextInt(this.upperBound);
-					} while (!movesUnvisited.contains(step));
-					movesUnvisited.remove(movesUnvisited.indexOf(step));
-
-					directions = getDirections(direction, step, x, y);
-
-					newPoint = new Point(directions[1], directions[2]);
-					added = setNewPoint(points, newPoint);
-					if (added) {
-						solution[i] = step;
-						break;
-					}
-				}
-
-				x = directions[1];
-				y = directions[2];
-				direction = directions[0];
-			}
+		int[] repairedSolution = new int[solutionMoves.size()];
+		for (int i = 0; i < repairedSolution.length; i++) {
+			repairedSolution[i] = solutionMoves.get(i);
 		}
 
-		return solution;
+		return repairedSolution;
 	}
 
 	private boolean setNewPoint(Set<Point> points, Point newPoint) {

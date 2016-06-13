@@ -48,7 +48,7 @@ public class PDPTest {
 		variables = pdp.getMemoryMechanism()[1].getVariables();
 
 		Assert.assertEquals(18, variables.length);
-		Assert.assertEquals("[0, 2, 2, 0, 1, 2, 2, 0, 1, 2, 0, 2, 1, 1, 0, 1, 2, 0]", Arrays.toString(variables));
+		Assert.assertEquals("[0, 2, 2, 1, 1, 2, 2, 0, 1, 2, 0, 2, 1, 1, 0, 1, 2, 0]", Arrays.toString(variables));
 
 	}
 
@@ -218,23 +218,23 @@ public class PDPTest {
 
 		Assert.assertEquals(0.0, pdp.getFunctionValue(0), 0);
 
-		Assert.assertEquals(-1.0, pdp.getFunctionValue(1), 0);
+		Assert.assertEquals(-3.0, pdp.getFunctionValue(1), 0);
 
 		Assert.assertEquals(-2.0, pdp.getFunctionValue(2), 0);
 
-		Assert.assertEquals(0.0, pdp.getFunctionValue(3), 0);
+		Assert.assertEquals(-1.0, pdp.getFunctionValue(3), 0);
 
 		Assert.assertEquals(-2.0, pdp.getFunctionValue(4), 0);
 
-		Assert.assertEquals(-5.0, pdp.getFunctionValue(5), 0);
+		Assert.assertEquals(-2.0, pdp.getFunctionValue(5), 0);
 
-		Assert.assertEquals(-1.0, pdp.getFunctionValue(6), 0);
+		Assert.assertEquals(-3.0, pdp.getFunctionValue(6), 0);
 
 		Assert.assertEquals(-2.0, pdp.getFunctionValue(7), 0);
 
-		Assert.assertEquals(-1.0, pdp.getFunctionValue(8), 0);
+		Assert.assertEquals(-4.0, pdp.getFunctionValue(8), 0);
 
-		Assert.assertEquals(-3.0, pdp.getFunctionValue(9), 0);
+		Assert.assertEquals(-1.0, pdp.getFunctionValue(9), 0);
 
 	}
 

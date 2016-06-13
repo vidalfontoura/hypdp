@@ -16,7 +16,7 @@ import PDP.fitness.FitnessFunction;
  *
  * @author vfontoura
  */
-public class ExaustiveSearchMutationOperator extends MutationOperator {
+public class ExaustiveSearchMutationOperator extends MutationAndRuinRecreateOperator {
 
 	private Random rng;
 
