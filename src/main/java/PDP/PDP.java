@@ -135,6 +135,7 @@ public class PDP extends ProblemDomain {
 		memoryMechanism[index] = pdpSolution;
 
 		double functionValue = getFunctionValue(index);
+		pdpSolution.setFitness(functionValue);
 
 		if (functionValue < bestSolutionValue) {
 			bestSolutionValue = functionValue;
@@ -198,6 +199,7 @@ public class PDP extends ProblemDomain {
 		pdpSolution.setVariables(offspring);
 		memoryMechanism[solutionDestinationIndex] = pdpSolution;
 		double functionValue = getFunctionValue(solutionDestinationIndex);
+		pdpSolution.setFitness(functionValue);
 
 		return functionValue;
 
@@ -235,6 +237,7 @@ public class PDP extends ProblemDomain {
 		pdpSolution.setVariables(offspring);
 		memoryMechanism[solutionDestinationIndex] = pdpSolution;
 		double functionValue = getFunctionValue(solutionDestinationIndex);
+		pdpSolution.setFitness(functionValue);
 
 		return functionValue;
 	}
@@ -255,6 +258,7 @@ public class PDP extends ProblemDomain {
 			destVariables[i] = srcVariables[i];
 
 		}
+		destSolution.setFitness(srcSolution.getFitness());
 		memoryMechanism[solutionDestinationIndex] = destSolution;
 
 	}

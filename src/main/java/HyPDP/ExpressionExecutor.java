@@ -30,7 +30,7 @@ public class ExpressionExecutor {
 	}
 
 	public static void main(String[] args) {
-		String function = "(1.0 * 10.0) + (2.0 * 1)";
+		String function = "(1.0 * 10.0) + (2.0 * 2.0)";
 		double calculate = ExpressionExecutor.calculate(function);
 		System.out.println(calculate);
 	}
