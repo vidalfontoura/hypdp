@@ -91,7 +91,46 @@
 			</plugin>
            
            
+             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.2-beta-5</version>
+                <configuration>
+                    <finalName>hypdpTest</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>hypdpTest</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>hypdpTest</finalName>
+                            <archive>
+                                <manifest>
+                                    <mainClass>HyPDP.CustomHH</mainClass>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                    </execution>
+        		</executions>
+            </plugin>
+           
+           
+           
+           
             </plugins>
+            
+            
+            
+            
+            
+            
 	</build>
 	<profiles>
 		<profile>
