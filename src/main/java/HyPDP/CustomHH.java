@@ -74,9 +74,16 @@ public class CustomHH extends HyperHeuristic {
 
 		startTime = System.currentTimeMillis();
 
+		// Selects a random solution from the memory
+		int solutionIndex1 = this.rng.nextInt(this.memorySize - 3);
+
+		// Copy the selected for current solution for the current index (defined
+		// by me 11)
+		problem.copySolution(solutionIndex1, this.memorySize - 1);
+
 		// Executing all heuristics first to populate the statistics information
 		for (int i = 0; i < problem.getNumberOfHeuristics(); i++) {
-			executeHeuristic(problem, i);
+			executeHeuristic(problem, i, this.memorySize - 1);
 		}
 
 		while (!hasTimeExpired()) {
@@ -85,7 +92,7 @@ public class CustomHH extends HyperHeuristic {
 
 			int heuristicIndex = selectHeuristicToApply(problem);
 
-			executeHeuristic(problem, heuristicIndex);
+			executeHeuristic(problem, heuristicIndex, this.memorySize - 1);
 
 			printMemoryMechanism(problem);
 
@@ -100,7 +107,7 @@ public class CustomHH extends HyperHeuristic {
 	/**
 	 * @param problem
 	 */
-	private void executeHeuristic(ProblemDomain problem, int heuristicIndex) {
+	private void executeHeuristic(ProblemDomain problem, int heuristicIndex, int currentIndex) {
 
 		updateCr(heuristicIndex);
 
@@ -108,20 +115,17 @@ public class CustomHH extends HyperHeuristic {
 		double currentFitness = 1.0;
 		double newFitness = 1.0;
 
-		int solutionIndex1 = -1;
 		int solutionIndex2 = -1;
 		if (isCrossover(heuristicIndex)) {
-			// Selects a random solution from the memory
-			solutionIndex1 = this.rng.nextInt(this.memorySize - 2);
 
-			currentFitness = problem.getFunctionValue(solutionIndex1);
+			currentFitness = problem.getFunctionValue(currentIndex);
 
-			solutionIndex2 = solutionIndex1;
+			solutionIndex2 = currentIndex;
 			do {
-				solutionIndex2 = this.rng.nextInt(this.memorySize - 2);
-			} while (solutionIndex1 == solutionIndex2);
+				solutionIndex2 = this.rng.nextInt(this.memorySize - 3);
+			} while (currentIndex == solutionIndex2);
 
-			newFitness = problem.applyHeuristic(heuristicIndex, solutionIndex1, solutionIndex2, this.memorySize - 1);
+			newFitness = problem.applyHeuristic(heuristicIndex, currentIndex, solutionIndex2, this.memorySize - 2);
 
 			delta = currentFitness - newFitness;
 
@@ -132,10 +136,9 @@ public class CustomHH extends HyperHeuristic {
 			}
 
 		} else {
-			solutionIndex1 = this.rng.nextInt(this.memorySize - 2);
 
-			currentFitness = problem.getFunctionValue(solutionIndex1);
-			newFitness = problem.applyHeuristic(heuristicIndex, solutionIndex1, this.memorySize - 1);
+			currentFitness = problem.getFunctionValue(currentIndex);
+			newFitness = problem.applyHeuristic(heuristicIndex, currentIndex, this.memorySize - 2);
 
 			delta = currentFitness - newFitness;
 
@@ -148,14 +151,23 @@ public class CustomHH extends HyperHeuristic {
 
 		// If delta > 0 means that the netFitness is better than
 		// currentFitness
-		if (delta >= 0) {
+		if (delta > 0) {
 			updateCcurrent(heuristicIndex);
 			updateCava(heuristicIndex, delta);
-			System.out.println("Replacing solution with " + problem.getFunctionValue(solutionIndex1) + " by "
-					+ problem.getFunctionValue(this.memorySize - 1));
-			problem.copySolution(this.memorySize - 1, solutionIndex1);
+			System.out.println("Replacing solution with " + problem.getFunctionValue(currentIndex) + " by "
+					+ problem.getFunctionValue(this.memorySize - 2));
 
-		} else {
+			problem.copySolution(this.memorySize - 2, currentIndex);
+
+		} else if (delta == 0) {
+
+			// Accepting equal solution, backuping current solution
+			int backupIndex = this.rng.nextInt(this.memorySize - 3);
+			System.out.println("Accepting equal solution backuping current solution to random index: " + backupIndex);
+			problem.copySolution(currentIndex, backupIndex);
+
+			problem.copySolution(this.memorySize - 2, currentIndex);
+
 			// TODO: If delta < 0 means that the newFitness is not better
 			// than
 			// currentFitness. Check the move acceptance here using a naive
@@ -400,14 +412,14 @@ public class CustomHH extends HyperHeuristic {
 		long seed = 10l;
 		long timeLimit = 60000;
 		int instance = 4;
-		if (args.length >= 3) {
+		if (args != null && args.length >= 3) {
 			seed = Long.valueOf(args[0]);
 			instance = Integer.valueOf(args[1]);
 			timeLimit = Long.valueOf(args[2]);
 
 		}
 
-		int memorySize = 10;
+		int memorySize = 12;
 
 		String selectionFunction = "(1 *RC) - (2 * Cr)";
 		String acceptanceFunction = "(Delta + PF) - CI";

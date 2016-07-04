@@ -6,7 +6,7 @@
 	<groupId>edu.ufpr.cbio</groupId>
 	<artifactId>hypdp</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>hypdp</name>
 
 
