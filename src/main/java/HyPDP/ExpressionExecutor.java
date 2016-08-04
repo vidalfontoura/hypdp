@@ -25,6 +25,7 @@ public class ExpressionExecutor {
 
 		} catch (ScriptException ex) {
 			System.err.println(String.format("An error occurred while executing the expression: %s", function));
+			System.exit(1);
 		}
 		return value;
 	}

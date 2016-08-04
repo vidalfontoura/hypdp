@@ -47,6 +47,8 @@ public class CustomHH extends HyperHeuristic {
 
 	private int numberOfInteractions;
 
+	private long seed;
+
 	public CustomHH(long seed, int memorySize, String selectionFunction, String acceptanceFunction, int rcWindowSize) {
 		super(seed);
 		this.memorySize = memorySize;
@@ -59,10 +61,14 @@ public class CustomHH extends HyperHeuristic {
 		this.numberOfInteractions = 0;
 		this.acceptanceFunction = acceptanceFunction;
 
+		this.seed = seed;
+
 	}
 
 	@Override
 	protected void solve(ProblemDomain problem) {
+
+		System.out.println("Starting HH framework with seed: " + this.seed);
 
 		this.initializeMemoryMechanism(problem);
 
@@ -296,7 +302,25 @@ public class CustomHH extends HyperHeuristic {
 				resultingFunction = resultingFunction.replace(statistic.name(), String.valueOf(value));
 			}
 
-			double functionValue = ExpressionExecutor.calculate(resultingFunction);
+			String input = resultingFunction;
+			while (input.contains("(") && input.contains(")")) {
+				input = input.replaceAll("-0.0", "0.0").replaceAll("- -", "+ ").replaceAll("--", "+ ");
+
+				int indexLastOpeningParantesis = input.lastIndexOf("(");
+				String substring = input.substring(indexLastOpeningParantesis);
+				int index1 = substring.indexOf("(");
+				int index2 = substring.indexOf(")");
+				substring = substring.substring(index1, index2 + 1);
+
+				String partialResult = String.valueOf(ExpressionExecutor.calculate(
+						substring.replace(" ", "").replaceAll("/0.0", "/0.001").replaceAll("/-0.0", "/-0.001")));
+
+				input = input.replace(substring, partialResult);
+
+			}
+
+			double functionValue = ExpressionExecutor.calculate(input.replaceAll(" ", "").replaceAll("/0.0", "/-0.001")
+					.replaceAll("- -", "+ ").replaceAll("--", "+ "));
 
 			heuristicsSelectionFunctionValue.put(i, functionValue);
 
@@ -409,9 +433,9 @@ public class CustomHH extends HyperHeuristic {
 
 	public static void main(String[] args) {
 
-		long seed = 10l;
+		long seed = 0l;
 		long timeLimit = 60000;
-		int instance = 4;
+		int instance = 1;
 		if (args != null && args.length >= 3) {
 			seed = Long.valueOf(args[0]);
 			instance = Integer.valueOf(args[1]);
@@ -421,7 +445,7 @@ public class CustomHH extends HyperHeuristic {
 
 		int memorySize = 12;
 
-		String selectionFunction = "(1 *RC) - (2 * Cr)";
+		String selectionFunction = "( Cava - Cr ) - ( Cava - Cr ) - RC / Ccurrent / Ccurrent + RC / Ccurrent / Ccurrent";
 		String acceptanceFunction = "(Delta + PF) - CI";
 		int rcWindowSize = 10;
 
