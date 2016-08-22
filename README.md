@@ -1,8 +1,4 @@
-# v1 -> This version adds the CustomHH class which is very similar with a genetic algorithm. The Results for the instance sq4 are listed below
-	
-	
-	
-# v2 ->
+# v1 ->
 	1 -> Inicializa o mecanismo de memória com backtrack (12 posições)
 	2 -> Seleciona uma solução do mecanismo de memória de maneira aleatória
 	3 -> Copia ela para a ultima posição do mecanismo (index=11)
