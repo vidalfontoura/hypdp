@@ -51,7 +51,8 @@ public class CustomHH extends HyperHeuristic {
 	
 	private int instance;
 
-	public CustomHH(long seed, int memorySize, String selectionFunction, String acceptanceFunction, int rcWindowSize) {
+	public CustomHH(long seed, int memorySize, String selectionFunction, String acceptanceFunction, int rcWindowSize,
+			int instance) {
 		super(seed);
 		this.memorySize = memorySize;
 		this.selectionFunction = selectionFunction;
@@ -443,7 +444,7 @@ public class CustomHH extends HyperHeuristic {
 
 		long seed = 0l;
 		long timeLimit = 60000;
-		int instance = 11;
+		int instance = 8;
 		if (args != null && args.length >= 3) {
 			seed = Long.valueOf(args[0]);
 			instance = Integer.valueOf(args[1]);
@@ -457,7 +458,7 @@ public class CustomHH extends HyperHeuristic {
 		String acceptanceFunction = "(CI - TI) + PF * CF";
 		int rcWindowSize = 10;
 
-		CustomHH cfhh = new CustomHH(seed, memorySize, selectionFunction, acceptanceFunction, rcWindowSize);
+		CustomHH cfhh = new CustomHH(seed, memorySize, selectionFunction, acceptanceFunction, rcWindowSize, instance);
 		PDP problem = new PDP(seed);
 		problem.loadInstance(instance);
 
