@@ -3,12 +3,10 @@
  */
 package HyPDP;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -50,6 +48,8 @@ public class CustomHH extends HyperHeuristic {
 	private long seed;
 
 	private int totalNumberOfInteractions = 2000;
+	
+	private int instance;
 
 	public CustomHH(long seed, int memorySize, String selectionFunction, String acceptanceFunction, int rcWindowSize) {
 		super(seed);
@@ -64,17 +64,18 @@ public class CustomHH extends HyperHeuristic {
 		this.acceptanceFunction = acceptanceFunction;
 
 		this.seed = seed;
+		this.instance = instance;
 
 	}
 
 	@Override
 	protected void solve(ProblemDomain problem) {
-
-		System.out.println("Starting HH framework with seed: " + this.seed);
+		
+		System.out.println("Starting HH framework with instance: "+instance+" and seed: " + this.seed + " and selectioFunction = "+selectionFunction);
 
 		this.initializeMemoryMechanism(problem);
 
-		printMemoryMechanism(problem);
+//		printMemoryMechanism(problem);
 
 		this.setHeuristicTypes(problem);
 
@@ -84,8 +85,8 @@ public class CustomHH extends HyperHeuristic {
 
 		// Selects a random solution from the memory
 		int solutionIndex1 = this.rng.nextInt(this.memorySize - 3);
-		System.out.println("Selecting solution index:" + solutionIndex1 + " with fitness: "
-				+ problem.getFunctionValue(solutionIndex1));
+//		System.out.println("Selecting solution index:" + solutionIndex1 + " with fitness: "
+//				+ problem.getFunctionValue(solutionIndex1));
 
 		// Copy the selected for current solution for the current index (defined
 		// by me as the last position of memory mechanism)
@@ -100,13 +101,13 @@ public class CustomHH extends HyperHeuristic {
 
 		while (!hasTimeExpired()) {
 
-			printHeuristicsStatistics();
+			// printHeuristicsStatistics();
 
 			int heuristicIndex = selectHeuristicToApply(problem);
 
 			executeHeuristic(problem, heuristicIndex, this.memorySize - 1);
 
-			printMemoryMechanism(problem);
+			// printMemoryMechanism(problem);
 
 			numberOfInteractions++;
 
@@ -142,8 +143,8 @@ public class CustomHH extends HyperHeuristic {
 			// in the position size -2 of the memory mechanism
 			newFitness = problem.applyHeuristic(heuristicIndex, currentIndex, solutionIndex2, this.memorySize - 2);
 
-			System.out.println("Applied heuristic: " + heuristicIndex + " and got "
-					+ problem.getFunctionValue(this.memorySize - 2));
+//			System.out.println("Applied heuristic: " + heuristicIndex + " and got "
+//					+ problem.getFunctionValue(this.memorySize - 2));
 			delta = currentFitness - newFitness;
 
 			if (bestFitness > newFitness) {
@@ -158,8 +159,8 @@ public class CustomHH extends HyperHeuristic {
 			currentFitness = problem.getFunctionValue(currentIndex);
 			newFitness = problem.applyHeuristic(heuristicIndex, currentIndex, this.memorySize - 2);
 
-			System.out.println("Applied heuristic: " + heuristicIndex + " and got "
-					+ problem.getFunctionValue(this.memorySize - 2));
+//			System.out.println("Applied heuristic: " + heuristicIndex + " and got "
+//					+ problem.getFunctionValue(this.memorySize - 2));
 
 			delta = currentFitness - newFitness;
 
@@ -175,23 +176,23 @@ public class CustomHH extends HyperHeuristic {
 		if (delta > 0) {
 			updateCcurrent(heuristicIndex);
 			updateCava(heuristicIndex, delta);
-			System.out.println("Replacing solution with " + problem.getFunctionValue(currentIndex) + " by "
-					+ problem.getFunctionValue(this.memorySize - 2));
+//			System.out.println("Replacing solution with " + problem.getFunctionValue(currentIndex) + " by "
+//					+ problem.getFunctionValue(this.memorySize - 2));
 
 			problem.copySolution(this.memorySize - 2, currentIndex);
 
-		} else if (delta <= 0) {
+		} else if (delta == 0) {
 
 			// Accepting equal solution, backuping current solution
-			if (shouldAccept(delta, currentFitness, newFitness, numberOfInteractions, totalNumberOfInteractions)) {
+//			if (shouldAccept(delta, currentFitness, newFitness, numberOfInteractions, totalNumberOfInteractions)) {
 				int backupIndex = this.rng.nextInt(this.memorySize - 3);
-				System.out
-						.println("Accepting equal solution backuping current solution to random index: " + backupIndex);
+//				System.out
+//						.println("Accepting equal solution backuping current solution to random index: " + backupIndex);
 				problem.copySolution(currentIndex, backupIndex);
 
 				problem.copySolution(this.memorySize - 2, currentIndex);
 				updateCAccept(heuristicIndex);
-			}
+//			}
 		}
 		updateRC(heuristicIndex, currentFitness, newFitness);
 	}
@@ -331,8 +332,8 @@ public class CustomHH extends HyperHeuristic {
 			}
 		}
 		Integer key = maxEntry.getKey();
-		System.out.println();
-		System.out.println("Selection heuristic index=" + key);
+//		System.out.println();
+//		System.out.println("Selection heuristic index=" + key);
 		return key;
 
 	}
@@ -375,13 +376,15 @@ public class CustomHH extends HyperHeuristic {
 		String acceptanceCriterion = acceptanceFunction;
 
 		acceptanceCriterion = acceptanceCriterion.replace("Delta", String.valueOf(delta))
-				.replace("PF", String.valueOf(currentFitness)).replace("CF", String.valueOf(newFitness))
+				.replace("PF", String.valueOf(currentFitness * -1)).replace("CF", String.valueOf(newFitness * -1))
 				.replace("CI", String.valueOf(currentIteration)).replace("TI", String.valueOf(totalNumberOfIteraction));
 
 		double calculate = ExpressionExecutor.calculate(acceptanceCriterion);
+		if (calculate > 0) {
+			calculate = calculate * -1;
+		}
 		double result = Math.exp(calculate);
 
-		System.out.println("Acceptance result " + result);
 		if (result <= 0.5) {
 			return true;
 		}
@@ -410,11 +413,12 @@ public class CustomHH extends HyperHeuristic {
 	}
 
 	public void printSelectionFunctionValues() {
-		System.out.println();
-		System.out.println("Priting selection function results");
-		for (Entry<Integer, Double> entry : heuristicsSelectionFunctionValue.entrySet()) {
-			System.out.println(entry.getKey() + "=" + entry.getValue());
-		}
+		// System.out.println();
+		// System.out.println("Priting selection function results");
+		// for (Entry<Integer, Double> entry :
+		// heuristicsSelectionFunctionValue.entrySet()) {
+		// System.out.println(entry.getKey() + "=" + entry.getValue());
+		// }
 
 	}
 
@@ -453,8 +457,6 @@ public class CustomHH extends HyperHeuristic {
 		String acceptanceFunction = "(CI - TI) + PF * CF";
 		int rcWindowSize = 10;
 
-		List<FitSol> bestSolutions = Lists.newArrayList();
-
 		CustomHH cfhh = new CustomHH(seed, memorySize, selectionFunction, acceptanceFunction, rcWindowSize);
 		PDP problem = new PDP(seed);
 		problem.loadInstance(instance);
@@ -463,55 +465,9 @@ public class CustomHH extends HyperHeuristic {
 		cfhh.loadProblemDomain(problem);
 		cfhh.run();
 
-		System.out.println("Total Interactions: " + cfhh.getInteractionNumber());
 
-		FitSol fitSol = new FitSol(cfhh.getBestSolution(), cfhh.getBestFitness());
-
-		bestSolutions.add(fitSol);
-
-		bestSolutions.stream().forEach(b -> System.out.println(b.getFitness() + ":" + b.getSolution()));
 
 	}
 
-	static class FitSol {
-		private String solution;
-		private double fitness;
-
-		public FitSol(String solution, double fitness) {
-			this.solution = solution;
-			this.fitness = fitness;
-		}
-
-		/**
-		 * @return the solution
-		 */
-		public String getSolution() {
-			return solution;
-		}
-
-		/**
-		 * @param solution
-		 *            the solution to set
-		 */
-		public void setSolution(String solution) {
-			this.solution = solution;
-		}
-
-		/**
-		 * @return the fitness
-		 */
-		public double getFitness() {
-			return fitness;
-		}
-
-		/**
-		 * @param fitness
-		 *            the fitness to set
-		 */
-		public void setFitness(double fitness) {
-			this.fitness = fitness;
-		}
-
-	}
 
 }
