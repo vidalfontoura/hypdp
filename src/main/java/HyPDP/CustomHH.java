@@ -308,14 +308,15 @@ public class CustomHH extends HyperHeuristic {
 				substring = substring.substring(index1, index2 + 1);
 
 				String partialResult = String.valueOf(ExpressionExecutor.calculate(
-						substring.replace(" ", "").replaceAll("/0.0", "/0.001").replaceAll("/-0.0", "/-0.001")));
+substring.replace(" ", "")
+						.replaceAll("/0.0", "/0.001").replaceAll("/-0.0", "/0.001").replaceAll("/ -0.0", "/0.001")));
 
 				input = input.replace(substring, partialResult);
 
 			}
 
-			double functionValue = ExpressionExecutor.calculate(input.replaceAll(" ", "").replaceAll("/0.0", "/-0.001")
-					.replaceAll("- -", "+ ").replaceAll("--", "+ "));
+			double functionValue = ExpressionExecutor.calculate(input.replaceAll(" ", "").replaceAll("/0.0", "/0.001")
+					.replaceAll("- -", "+ ").replaceAll("--", "+ ").replaceAll("/-0.0", "/0.001"));
 
 			heuristicsSelectionFunctionValue.put(i, functionValue);
 
@@ -444,7 +445,7 @@ public class CustomHH extends HyperHeuristic {
 
 		long seed = 0l;
 		long timeLimit = 60000;
-		int instance = 8;
+		int instance = 5;
 		if (args != null && args.length >= 3) {
 			seed = Long.valueOf(args[0]);
 			instance = Integer.valueOf(args[1]);
@@ -454,7 +455,7 @@ public class CustomHH extends HyperHeuristic {
 
 		int memorySize = 12;
 
-		String selectionFunction = "RC * Ccurrent / Cr";
+		String selectionFunction = "RC * RC * RC * RC * RC * RC * RC * RC * RC * Cava";
 		String acceptanceFunction = "(CI - TI) + PF * CF";
 		int rcWindowSize = 10;
 
