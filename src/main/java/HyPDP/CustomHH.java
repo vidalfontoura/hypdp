@@ -443,19 +443,20 @@ substring.replace(" ", "")
 
 	public static void main(String[] args) {
 
-		long seed = 0l;
+		long seed = 8l;
 		long timeLimit = 60000;
-		int instance = 5;
-		if (args != null && args.length >= 3) {
+		int instance = 4;
+		String selectionFunction = "(1 *RC) - (2 * Cr)";
+		if (args != null && args.length >= 4) {
 			seed = Long.valueOf(args[0]);
 			instance = Integer.valueOf(args[1]);
 			timeLimit = Long.valueOf(args[2]);
-
+			selectionFunction = args[3];
 		}
 
 		int memorySize = 12;
 
-		String selectionFunction = "RC * RC * RC * RC * RC * RC * RC * RC * RC * Cava";
+
 		String acceptanceFunction = "(CI - TI) + PF * CF";
 		int rcWindowSize = 10;
 
