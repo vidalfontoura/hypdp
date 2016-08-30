@@ -60,7 +60,7 @@
             </plugin>
             
              <!-- any other plugins -->
-      <plugin>
+     <!--   <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <executions>
           <execution>
@@ -75,7 +75,7 @@
             <descriptorRef>jar-with-dependencies</descriptorRef>
           </descriptorRefs>
         </configuration>
-      </plugin>
+      </plugin>-->
             
             <plugin>
 				  <groupId>org.apache.maven.plugins</groupId>
@@ -89,9 +89,23 @@
 				    </execution>
 				  </executions>
 			</plugin>
+			
+			  <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>HyPDP.CustomHH</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+            </plugin>
            
            
-             <plugin>
+            <!--   <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.2-beta-5</version>
@@ -119,7 +133,7 @@
                         </configuration>
                     </execution>
         		</executions>
-            </plugin>
+            </plugin>-->
            
            
            
