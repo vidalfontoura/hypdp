@@ -72,7 +72,8 @@ public class CustomHH extends HyperHeuristic {
 	@Override
 	protected void solve(ProblemDomain problem) {
 		
-		System.out.println("Starting HH framework with instance: "+instance+" and seed: " + this.seed + " and selectioFunction = "+selectionFunction);
+		System.out.println("Starting HH framework with instance: " + instance + " and seed: " + this.seed
+				+ ", selectioFunction = " + selectionFunction + " and acceptanceFunction = " + acceptanceFunction);
 
 		this.initializeMemoryMechanism(problem);
 
