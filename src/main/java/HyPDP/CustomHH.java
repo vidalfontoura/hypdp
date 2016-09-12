@@ -381,7 +381,26 @@ substring.replace(" ", "")
 				.replace("PF", String.valueOf(currentFitness * -1)).replace("CF", String.valueOf(newFitness * -1))
 				.replace("CI", String.valueOf(currentIteration)).replace("TI", String.valueOf(totalNumberOfIteraction));
 
-		double calculate = ExpressionExecutor.calculate(acceptanceCriterion);
+		String input = acceptanceCriterion;
+		while (input.contains("(") && input.contains(")")) {
+			input = input.replaceAll("-0.0", "0.0").replaceAll("- -", "+ ").replaceAll("--", "+ ");
+
+			int indexLastOpeningParantesis = input.lastIndexOf("(");
+			String substring = input.substring(indexLastOpeningParantesis);
+			int index1 = substring.indexOf("(");
+			int index2 = substring.indexOf(")");
+			substring = substring.substring(index1, index2 + 1);
+
+			String partialResult = String.valueOf(ExpressionExecutor.calculate(substring.replace(" ", "")
+					.replaceAll("/0.0", "/0.001").replaceAll("/-0.0", "/0.001").replaceAll("/ -0.0", "/0.001")));
+
+			input = input.replace(substring, partialResult);
+
+		}
+
+		double calculate = ExpressionExecutor.calculate(input.replaceAll(" ", "").replaceAll("/0.0", "/0.001")
+				.replaceAll("- -", "+ ").replaceAll("--", "+ ").replaceAll("/-0.0", "/0.001"));
+
 		if (calculate > 0) {
 			calculate = calculate * -1;
 		}
