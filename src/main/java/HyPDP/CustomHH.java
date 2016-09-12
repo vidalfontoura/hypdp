@@ -182,18 +182,18 @@ public class CustomHH extends HyperHeuristic {
 
 			problem.copySolution(this.memorySize - 2, currentIndex);
 
-		} else if (delta == 0) {
+//		} else if (delta == 0) {
+		}
+		// Accepting equal solution, backuping current solution
+		if (shouldAccept(delta, currentFitness, newFitness, numberOfInteractions, totalNumberOfInteractions)) {
+			int backupIndex = this.rng.nextInt(this.memorySize - 3);
+			// System.out
+			// .println("Accepting equal solution backuping current solution to
+			// random index: " + backupIndex);
+			problem.copySolution(currentIndex, backupIndex);
 
-			// Accepting equal solution, backuping current solution
-//			if (shouldAccept(delta, currentFitness, newFitness, numberOfInteractions, totalNumberOfInteractions)) {
-				int backupIndex = this.rng.nextInt(this.memorySize - 3);
-//				System.out
-//						.println("Accepting equal solution backuping current solution to random index: " + backupIndex);
-				problem.copySolution(currentIndex, backupIndex);
-
-				problem.copySolution(this.memorySize - 2, currentIndex);
-				updateCAccept(heuristicIndex);
-//			}
+			problem.copySolution(this.memorySize - 2, currentIndex);
+			updateCAccept(heuristicIndex);
 		}
 		updateRC(heuristicIndex, currentFitness, newFitness);
 	}
