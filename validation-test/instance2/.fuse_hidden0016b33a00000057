@@ -1,0 +1,7 @@
+Host --> pegasus
+Init Time: Qui Set 1 11:35:32 BRT 2016
+Seed: 18
+Instance: 2
+Time: 600000
+Selection Function: RC hypdp-0.0.1-jar-with-dependencies.jar run_hypdp_cluster.sh run_hypdp_cluster.sh.o241341 run_hypdp_cluster.sh.o241342 run_main.sh Ccurrent hypdp-0.0.1-jar-with-dependencies.jar run_hypdp_cluster.sh run_hypdp_cluster.sh.o241341 run_hypdp_cluster.sh.o241342 run_main.sh Cava - Cr
+Starting HH framework with instance: 2 and seed: 18 and selectioFunction = RC * Ccurrent * Cava - Cr

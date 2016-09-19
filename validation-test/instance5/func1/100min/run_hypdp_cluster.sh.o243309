@@ -1,0 +1,9 @@
+Host --> libra
+Init Time: Ter Set 6 11:16:22 BRT 2016
+Seed: +15
+Instance: +5
+Time: +6000000
+Selection Function: RC * Ccurrent * Cava - Cr
+Starting HH framework with instance: 5 and seed: 15 and selectioFunction = RC * Ccurrent * Cava - Cr
+Best: -21.0 	[1,0,2,2,0,0,2,2,0,1,1,2,1,2,1,2,0,1,1,1,0,0,1,1,2,1,1,1,2,2,1,0,0,2,2,0,0,2,2,1,1,2,2,0,1,1]
+End Time: Ter Set 6 13:11:38 BRT 2016 --- run in 1:55:16 ---

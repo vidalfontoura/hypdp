@@ -1,0 +1,14 @@
+Host --> libra
+Init Time: Seg Set 5 11:24:52 BRT 2016
+Seed: 4
+Instance: 3
+Time: 6000000
+Selection Function: RC * Ccurrent * Cava - Cr
+Starting HH framework with instance: 3 and seed: 4 and selectioFunction = RC * Ccurrent * Cava - Cr
+Java HotSpot(TM) 64-Bit Server VM warning: INFO: os::commit_memory(0x00002b2e44d80000, 262144, 0) failed; error='Não foi possível alocar memória' (errno=12)
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (mmap) failed to map 262144 bytes for committing reserved memory.
+# An error report file with more information is saved as:
+# /media/sharedDisk/vdfontoura/hypdp/validation-test/instance3/func1/100min/hs_err_pid5960.log
+End Time: Seg Set 5 11:26:31 BRT 2016 --- run in 0:1:39 ---

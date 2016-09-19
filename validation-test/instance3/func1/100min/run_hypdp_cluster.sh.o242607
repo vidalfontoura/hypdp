@@ -1,0 +1,9 @@
+Host --> libra
+Init Time: Seg Set 5 11:27:52 BRT 2016
+Seed: 23
+Instance: 3
+Time: 6000000
+Selection Function: RC * Ccurrent * Cava - Cr
+Starting HH framework with instance: 3 and seed: 23 and selectioFunction = RC * Ccurrent * Cava - Cr
+Best: -6.0 	[1,0,2,2,0,1,2,2,1,1,0,0,1,2,2,1,1,1,1,2,2,1,0]
+End Time: Seg Set 5 13:20:59 BRT 2016 --- run in 1:53:7 ---

@@ -1,0 +1,7 @@
+Host --> pegasus
+Init Time: Qui Set 1 11:49:07 BRT 2016
+Seed: 29
+Instance: 2
+Time: 600000
+Selection Function: RC * Ccurrent * Cava - Cr
+Starting HH framework with instance: 2 and seed: 29 and selectioFunction = RC * Ccurrent * Cava - Cr
