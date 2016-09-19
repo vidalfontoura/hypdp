@@ -72,8 +72,14 @@ public class CustomHH extends HyperHeuristic {
 	@Override
 	protected void solve(ProblemDomain problem) {
 		
-		System.out.println("Starting HH framework with instance: " + instance + " and seed: " + this.seed
-				+ ", selectioFunction = " + selectionFunction + " and acceptanceFunction = " + acceptanceFunction);
+		System.out.println("Running CustomHH with parameters: ");
+		System.out.println("Selection Function: " + selectionFunction);
+		System.out.println("Acceptance Function: " + acceptanceFunction);
+		System.out.println("Seed: " + seed);
+		System.out.println("Instance: " + instance);
+		System.out.println("Timelimit: " + this.getTimeLimit());
+		System.out.println("MemorySize: " + memorySize);
+		System.out.println("RCWindoSize: " + rcWindowSize);
 
 		this.initializeMemoryMechanism(problem);
 
@@ -467,17 +473,16 @@ substring.replace(" ", "")
 		long timeLimit = 60000;
 		int instance = 8;
 		String selectionFunction = "RC * Ccurrent * Cava - Cr";
-		if (args != null && args.length >= 4) {
+		String acceptanceFunction = "( TI / ( Delta + Delta - Delta ) / TI ) / ( Delta + Delta - Delta ) / TI";
+		if (args != null && args.length >= 5) {
 			seed = Long.valueOf(args[0]);
 			instance = Integer.valueOf(args[1]);
 			timeLimit = Long.valueOf(args[2]);
 			selectionFunction = args[3];
+			acceptanceFunction = args[4];
 		}
 
 		int memorySize = 12;
-
-
-		String acceptanceFunction = "( TI / ( Delta + Delta - Delta ) / TI ) / ( Delta + Delta - Delta ) / TI";
 		int rcWindowSize = 10;
 
 		CustomHH cfhh = new CustomHH(seed, memorySize, selectionFunction, acceptanceFunction, rcWindowSize, instance);
