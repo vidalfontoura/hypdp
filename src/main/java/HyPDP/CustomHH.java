@@ -463,10 +463,10 @@ substring.replace(" ", "")
 
 	public static void main(String[] args) {
 
-		long seed = 8l;
+		long seed = 0l;
 		long timeLimit = 60000;
-		int instance = 4;
-		String selectionFunction = "(1 *RC) - (2 * Cr)";
+		int instance = 8;
+		String selectionFunction = "RC * Ccurrent * Cava - Cr";
 		if (args != null && args.length >= 4) {
 			seed = Long.valueOf(args[0]);
 			instance = Integer.valueOf(args[1]);
@@ -477,7 +477,7 @@ substring.replace(" ", "")
 		int memorySize = 12;
 
 
-		String acceptanceFunction = "(CI - TI) + PF * CF";
+		String acceptanceFunction = "( TI / ( Delta + Delta - Delta ) / TI ) / ( Delta + Delta - Delta ) / TI";
 		int rcWindowSize = 10;
 
 		CustomHH cfhh = new CustomHH(seed, memorySize, selectionFunction, acceptanceFunction, rcWindowSize, instance);
