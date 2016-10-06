@@ -1,0 +1,17 @@
+Host --> gemini
+Init Time: Ter Set 20 16:10:22 BRT 2016
+Seed: 23
+Instance: 7
+Time: 600000
+Selection Function: RC * Ccurrent * Cava - Cr
+Acceptance Function ( ( TI / Delta ) / ( ( Delta * ( ( TI / Delta ) / CI ) * Delta / Delta * TI ) - CI ) )
+Running CustomHH with parameters: 
+Selection Function: RC * Ccurrent * Cava - Cr
+Acceptance Function: ( ( TI / Delta ) / ( ( Delta * ( ( TI / Delta ) / CI ) * Delta / Delta * TI ) - CI ) )
+Seed: 23
+Instance: 7
+Timelimit: 600000
+MemorySize: 12
+RCWindoSize: 10
+/var/spool/gridengine/execd/gemini/job_scripts/246545: linha 37:  3964 Morto                   java -Xmx3000M -Xms3000M -jar hypdp-0.0.1-jar-with-dependencies.jar $1 $2 $3 "$4" "$5"
+End Time: Ter Set 20 16:12:08 BRT 2016 --- run in 0:1:46 ---

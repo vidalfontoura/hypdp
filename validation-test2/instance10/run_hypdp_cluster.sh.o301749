@@ -1,0 +1,17 @@
+Host --> loki
+Init Time: Qui Set 22 13:09:55 BRT 2016
+Seed: 17
+Instance: 10
+Time: 600000
+Selection Function: RC * Ccurrent * Cava - Cr
+Acceptance Function ( ( TI / Delta ) / ( ( Delta * ( ( TI / Delta ) / CI ) * Delta / Delta * TI ) - CI ) )
+Running CustomHH with parameters: 
+Selection Function: RC * Ccurrent * Cava - Cr
+Acceptance Function: ( ( TI / Delta ) / ( ( Delta * ( ( TI / Delta ) / CI ) * Delta / Delta * TI ) - CI ) )
+Seed: 17
+Instance: 10
+Timelimit: 600000
+MemorySize: 12
+RCWindoSize: 10
+Best: -30.0 	[0,0,2,0,1,0,0,2,1,1,0,1,2,1,1,0,0,2,1,1,0,1,2,2,1,0,1,2,2,1,0,0,2,2,1,2,1,0,1,0,0,2,2,0,0,2,0,0,2,1,2,2,0,1,0,2,2,1,2,0,1,0,0,2,2,1,2,1,0,1,1,2,1,1,2,0,2,2,0,0,1,0,1,2,1,0,0,2,1,0,1,1,1,0,0,1,2,0]
+End Time: Qui Set 22 13:21:17 BRT 2016 --- run in 0:11:22 ---
