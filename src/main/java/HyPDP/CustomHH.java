@@ -5,7 +5,6 @@ package HyPDP;
 
 import com.google.common.collect.Maps;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -50,6 +49,8 @@ public class CustomHH extends HyperHeuristic {
 	private int totalNumberOfInteractions = 2000;
 	
 	private int instance;
+
+	private int numberOfAccepts = 0;
 
 	public CustomHH(long seed, int memorySize, String selectionFunction, String acceptanceFunction, int rcWindowSize,
 			int instance) {
@@ -179,6 +180,9 @@ public class CustomHH extends HyperHeuristic {
 			}
 		}
 
+		//System.out.println("Current: " + currentFitness);
+		//System.out.println("New: " + newFitness);
+
 		// If delta > 0 means that the netFitness is better than
 		// currentFitness
 		if (delta > 0) {
@@ -188,21 +192,23 @@ public class CustomHH extends HyperHeuristic {
 //					+ problem.getFunctionValue(this.memorySize - 2));
 
 			problem.copySolution(this.memorySize - 2, currentIndex);
+		//	System.out.println("Better solution replacing current index: " + currentIndex);
 
-//		} else if (delta == 0) {
 		}
+		//if (delta == 0) {
+			// }
 		// Accepting equal solution, backuping current solution
 		if (shouldAccept(delta, currentFitness, newFitness, numberOfInteractions, totalNumberOfInteractions)) {
 			int backupIndex = this.rng.nextInt(this.memorySize - 3);
-			// System.out
-			// .println("Accepting equal solution backuping current solution to
-			// random index: " + backupIndex);
 			problem.copySolution(currentIndex, backupIndex);
 
 			problem.copySolution(this.memorySize - 2, currentIndex);
 			updateCAccept(heuristicIndex);
+			//System.out.println("Accepting worst replacing current index: " + currentIndex);
+			//numberOfAccepts++;
 		}
 		updateRC(heuristicIndex, currentFitness, newFitness);
+		//System.out.println();
 	}
 
 	private void updateCr(int appliedHeuristicIndex) {
@@ -453,10 +459,14 @@ substring.replace(" ", "")
 	public void printMemoryMechanism(ProblemDomain problem) {
 		for (int i = 0; i < memorySize; i++) {
 			PDP p = (PDP) problem;
-			System.out.print(p.getMemoryMechanism()[i].getFitness() + " - ");
-			System.out.println(Arrays.toString(p.getMemoryMechanism()[i].getVariables()).replace(" ", ""));
+			System.out.print(i + ": ");
+			System.out.println(p.getMemoryMechanism()[i].getFitness() + " - ");
+			// System.out.println(Arrays.toString(p.getMemoryMechanism()[i].getVariables()).replace("
+			// ", ""));
 
 		}
+		//System.out.println();
+		//System.out.println();
 	}
 
 	public String getBestSolution() {
@@ -467,13 +477,21 @@ substring.replace(" ", "")
 		return bestFitness;
 	}
 
+	public int getNumberOfInteractions() {
+		return numberOfInteractions;
+	}
+
+	public int getNumberOfAccepts() {
+		return numberOfAccepts;
+	}
+
 	public static void main(String[] args) {
 
-		long seed = 0l;
+		long seed = 3l;
 		long timeLimit = 60000;
-		int instance = 8;
+		int instance = 7;
 		String selectionFunction = "RC * Ccurrent * Cava - Cr";
-		String acceptanceFunction = "( TI / ( Delta + Delta - Delta ) / TI ) / ( Delta + Delta - Delta ) / TI";
+		String acceptanceFunction = "(TI / ( Delta * ( TI + TI ) ) )";
 		if (args != null && args.length >= 5) {
 			seed = Long.valueOf(args[0]);
 			instance = Integer.valueOf(args[1]);
@@ -492,6 +510,10 @@ substring.replace(" ", "")
 		cfhh.setTimeLimit(timeLimit);
 		cfhh.loadProblemDomain(problem);
 		cfhh.run();
+
+		//System.out.println("Number of accepts: " + cfhh.getNumberOfAccepts());
+		//System.out.println("Number of interactions: " + cfhh.getNumberOfInteractions());
+		
 
 
 
