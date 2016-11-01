@@ -1,0 +1,14 @@
+Host --> gemini
+Init Time: Seg Set 19 19:11:24 BRT 2016
+Seed: 24
+Instance: 4
+Time: 600000
+Selection Function: RC * Ccurrent * Cava - Cr
+Acceptance Function ( ( TI / Delta ) / ( ( Delta * ( ( TI / Delta ) / CI ) * Delta / Delta * TI ) - CI ) )
+Java HotSpot(TM) 64-Bit Server VM warning: INFO: os::commit_memory(0x0000000704800000, 2097152000, 0) failed; error='Cannot allocate memory' (errno=12)
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (mmap) failed to map 2097152000 bytes for committing reserved memory.
+# An error report file with more information is saved as:
+# /media/sharedDisk/vdfontoura/hypdp/validation-test2/instance4/hs_err_pid2497.log
+End Time: Seg Set 19 19:11:25 BRT 2016 --- run in 0:0:1 ---

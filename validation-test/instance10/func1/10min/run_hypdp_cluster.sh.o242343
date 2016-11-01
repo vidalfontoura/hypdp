@@ -1,0 +1,9 @@
+Host --> loki
+Init Time: Qui Set 1 15:55:07 BRT 2016
+Seed: +29
+Instance: +10
+Time: +600000
+Selection Function: +RC * Ccurrent * Cava - Cr
+Starting HH framework with instance: 10 and seed: 29 and selectioFunction = RC * Ccurrent * Cava - Cr
+Best: -36.0 	[2,1,1,2,0,1,0,0,2,1,2,2,0,2,1,0,1,0,0,2,2,0,1,1,0,1,2,1,2,2,0,1,1,2,2,0,1,1,0,0,2,0,1,2,1,1,2,1,2,2,0,0,1,2,0,1,2,2,0,0,1,2,1,1,0,1,2,0,0,1,1,0,0,2,2,1,2,0,0,1,2,1,0,1,2,0,2,2,0,1,0,1,1,0,2,1,0,1]
+End Time: Qui Set 1 16:07:01 BRT 2016 --- run in 0:11:54 ---

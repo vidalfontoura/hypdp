@@ -1,0 +1,24 @@
+Host --> gemini
+Init Time: Seg Set 19 19:07:09 BRT 2016
+Seed: 7
+Instance: 4
+Time: 600000
+Selection Function: RC * Ccurrent * Cava - Cr
+Acceptance Function ( ( TI / Delta ) / ( ( Delta * ( ( TI / Delta ) / CI ) * Delta / Delta * TI ) - CI ) )
+Running CustomHH with parameters: 
+Selection Function: RC * Ccurrent * Cava - Cr
+Acceptance Function: ( ( TI / Delta ) / ( ( Delta * ( ( TI / Delta ) / CI ) * Delta / Delta * TI ) - CI ) )
+Seed: 7
+Instance: 4
+Timelimit: 600000
+MemorySize: 12
+RCWindoSize: 10
+Java HotSpot(TM) 64-Bit Server VM warning: INFO: os::commit_memory(0x00002ac5cc280000, 262144, 0) failed; error='Não foi possível alocar memória' (errno=12)
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (mmap) failed to map 262144 bytes for committing reserved memory.
+# An error report file with more information is saved as:
+# /media/sharedDisk/vdfontoura/hypdp/validation-test2/instance4/hs_err_pid2357.log
+# [ timer expired, abort... ]
+/var/spool/gridengine/execd/gemini/job_scripts/246189: linha 37:  2357 Abortado                java -Xmx3000M -Xms3000M -jar hypdp-0.0.1-jar-with-dependencies.jar $1 $2 $3 "$4" "$5"
+End Time: Seg Set 19 19:11:22 BRT 2016 --- run in 0:4:13 ---

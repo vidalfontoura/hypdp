@@ -10,5 +10,5 @@ package HyPDP;
  */
 public enum AcceptanceInfo {
 
-	Delta, PF, CF, CI, TI
+	Delta, PF, CF, CI, TI, Random
 }

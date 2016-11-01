@@ -1,0 +1,17 @@
+Host --> pegasus
+Init Time: Seg Set 19 19:15:22 BRT 2016
+Seed: 28
+Instance: 4
+Time: 600000
+Selection Function: RC * Ccurrent * Cava - Cr
+Acceptance Function ( ( TI / Delta ) / ( ( Delta * ( ( TI / Delta ) / CI ) * Delta / Delta * TI ) - CI ) )
+Running CustomHH with parameters: 
+Selection Function: RC * Ccurrent * Cava - Cr
+Acceptance Function: ( ( TI / Delta ) / ( ( Delta * ( ( TI / Delta ) / CI ) * Delta / Delta * TI ) - CI ) )
+Seed: 28
+Instance: 4
+Timelimit: 600000
+MemorySize: 12
+RCWindoSize: 10
+Best: -10.0 	[1,0,0,1,2,2,1,0,2,1,0,2,1,0,0,2,2,1,2,0,1,0,0,2,1,1,0,0,1,2,1,1,0,1,2]
+End Time: Seg Set 19 19:28:56 BRT 2016 --- run in 0:13:34 ---

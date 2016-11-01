@@ -5,7 +5,6 @@ package HyPDP;
 
 import com.google.common.collect.Maps;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -51,6 +50,8 @@ public class CustomHH extends HyperHeuristic {
 	
 	private int instance;
 
+	private int numberOfAccepts = 0;
+
 	public CustomHH(long seed, int memorySize, String selectionFunction, String acceptanceFunction, int rcWindowSize,
 			int instance) {
 		super(seed);
@@ -72,7 +73,14 @@ public class CustomHH extends HyperHeuristic {
 	@Override
 	protected void solve(ProblemDomain problem) {
 		
-		System.out.println("Starting HH framework with instance: "+instance+" and seed: " + this.seed + " and selectioFunction = "+selectionFunction);
+		System.out.println("Running CustomHH with parameters: ");
+		System.out.println("Selection Function: " + selectionFunction);
+		System.out.println("Acceptance Function: " + acceptanceFunction);
+		System.out.println("Seed: " + seed);
+		System.out.println("Instance: " + instance);
+		System.out.println("Timelimit: " + this.getTimeLimit());
+		System.out.println("MemorySize: " + memorySize);
+		System.out.println("RCWindoSize: " + rcWindowSize);
 
 		this.initializeMemoryMechanism(problem);
 
@@ -172,6 +180,9 @@ public class CustomHH extends HyperHeuristic {
 			}
 		}
 
+		//System.out.println("Current: " + currentFitness);
+		//System.out.println("New: " + newFitness);
+
 		// If delta > 0 means that the netFitness is better than
 		// currentFitness
 		if (delta > 0) {
@@ -181,21 +192,23 @@ public class CustomHH extends HyperHeuristic {
 //					+ problem.getFunctionValue(this.memorySize - 2));
 
 			problem.copySolution(this.memorySize - 2, currentIndex);
+		//	System.out.println("Better solution replacing current index: " + currentIndex);
 
-		} else if (delta == 0) {
+		}
+		//if (delta == 0) {
+			// }
+		// Accepting equal solution, backuping current solution
+		if (shouldAccept(delta, currentFitness, newFitness, numberOfInteractions, totalNumberOfInteractions)) {
+			int backupIndex = this.rng.nextInt(this.memorySize - 3);
+			problem.copySolution(currentIndex, backupIndex);
 
-			// Accepting equal solution, backuping current solution
-//			if (shouldAccept(delta, currentFitness, newFitness, numberOfInteractions, totalNumberOfInteractions)) {
-				int backupIndex = this.rng.nextInt(this.memorySize - 3);
-//				System.out
-//						.println("Accepting equal solution backuping current solution to random index: " + backupIndex);
-				problem.copySolution(currentIndex, backupIndex);
-
-				problem.copySolution(this.memorySize - 2, currentIndex);
-				updateCAccept(heuristicIndex);
-//			}
+			problem.copySolution(this.memorySize - 2, currentIndex);
+			updateCAccept(heuristicIndex);
+			//System.out.println("Accepting worst replacing current index: " + currentIndex);
+			//numberOfAccepts++;
 		}
 		updateRC(heuristicIndex, currentFitness, newFitness);
+		//System.out.println();
 	}
 
 	private void updateCr(int appliedHeuristicIndex) {
@@ -291,6 +304,9 @@ public class CustomHH extends HyperHeuristic {
 				case Cr:
 					value = heuristicStatistics.getCr();
 					break;
+				case Random:
+					value = this.rng.nextDouble();
+					break;
 				default:
 					throw new RuntimeException("Unrecognized heuristic statistic: " + statistic);
 				}
@@ -379,9 +395,29 @@ substring.replace(" ", "")
 
 		acceptanceCriterion = acceptanceCriterion.replace("Delta", String.valueOf(delta))
 				.replace("PF", String.valueOf(currentFitness * -1)).replace("CF", String.valueOf(newFitness * -1))
-				.replace("CI", String.valueOf(currentIteration)).replace("TI", String.valueOf(totalNumberOfIteraction));
+				.replace("CI", String.valueOf(currentIteration)).replace("TI", String.valueOf(totalNumberOfIteraction))
+				.replace("Random", String.valueOf(this.rng.nextDouble()));
 
-		double calculate = ExpressionExecutor.calculate(acceptanceCriterion);
+		String input = acceptanceCriterion;
+		while (input.contains("(") && input.contains(")")) {
+			input = input.replaceAll("-0.0", "0.0").replaceAll("- -", "+ ").replaceAll("--", "+ ");
+
+			int indexLastOpeningParantesis = input.lastIndexOf("(");
+			String substring = input.substring(indexLastOpeningParantesis);
+			int index1 = substring.indexOf("(");
+			int index2 = substring.indexOf(")");
+			substring = substring.substring(index1, index2 + 1);
+
+			String partialResult = String.valueOf(ExpressionExecutor.calculate(substring.replace(" ", "")
+					.replaceAll("/0.0", "/0.001").replaceAll("/-0.0", "/0.001").replaceAll("/ -0.0", "/0.001")));
+
+			input = input.replace(substring, partialResult);
+
+		}
+
+		double calculate = ExpressionExecutor.calculate(input.replaceAll(" ", "").replaceAll("/0.0", "/0.001")
+				.replaceAll("- -", "+ ").replaceAll("--", "+ ").replaceAll("/-0.0", "/0.001"));
+
 		if (calculate > 0) {
 			calculate = calculate * -1;
 		}
@@ -427,10 +463,14 @@ substring.replace(" ", "")
 	public void printMemoryMechanism(ProblemDomain problem) {
 		for (int i = 0; i < memorySize; i++) {
 			PDP p = (PDP) problem;
-			System.out.print(p.getMemoryMechanism()[i].getFitness() + " - ");
-			System.out.println(Arrays.toString(p.getMemoryMechanism()[i].getVariables()).replace(" ", ""));
+			System.out.print(i + ": ");
+			System.out.println(p.getMemoryMechanism()[i].getFitness() + " - ");
+			// System.out.println(Arrays.toString(p.getMemoryMechanism()[i].getVariables()).replace("
+			// ", ""));
 
 		}
+		//System.out.println();
+		//System.out.println();
 	}
 
 	public String getBestSolution() {
@@ -441,23 +481,30 @@ substring.replace(" ", "")
 		return bestFitness;
 	}
 
+	public int getNumberOfInteractions() {
+		return numberOfInteractions;
+	}
+
+	public int getNumberOfAccepts() {
+		return numberOfAccepts;
+	}
+
 	public static void main(String[] args) {
 
-		long seed = 8l;
+		long seed = 3l;
 		long timeLimit = 60000;
-		int instance = 4;
-		String selectionFunction = "(1 *RC) - (2 * Cr)";
-		if (args != null && args.length >= 4) {
+		int instance = 7;
+		String selectionFunction = "RC * Ccurrent * Cava - Cr";
+		String acceptanceFunction = "(TI / ( Delta * ( TI + TI ) ) )";
+		if (args != null && args.length >= 5) {
 			seed = Long.valueOf(args[0]);
 			instance = Integer.valueOf(args[1]);
 			timeLimit = Long.valueOf(args[2]);
 			selectionFunction = args[3];
+			acceptanceFunction = args[4];
 		}
 
 		int memorySize = 12;
-
-
-		String acceptanceFunction = "(CI - TI) + PF * CF";
 		int rcWindowSize = 10;
 
 		CustomHH cfhh = new CustomHH(seed, memorySize, selectionFunction, acceptanceFunction, rcWindowSize, instance);
@@ -467,6 +514,10 @@ substring.replace(" ", "")
 		cfhh.setTimeLimit(timeLimit);
 		cfhh.loadProblemDomain(problem);
 		cfhh.run();
+
+		//System.out.println("Number of accepts: " + cfhh.getNumberOfAccepts());
+		//System.out.println("Number of interactions: " + cfhh.getNumberOfInteractions());
+		
 
 
 

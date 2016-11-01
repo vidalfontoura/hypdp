@@ -1,0 +1,9 @@
+Host --> gemini
+Init Time: Seg Set 5 17:40:26 BRT 2016
+Seed: +15
+Instance: +6
+Time: +6000000
+Selection Function: +RC * Ccurrent * Cava - Cr
+Starting HH framework with instance: 6 and seed: 15 and selectioFunction = RC * Ccurrent * Cava - Cr
+Best: -14.0 	[0,0,2,0,0,1,1,2,2,1,1,0,2,1,2,2,0,1,0,1,1,0,1,1,1,1,0,1,0,2,2,0,0,2,0,2,2,0,0,2,0,1,1,0,2,1,2,2]
+End Time: Seg Set 5 19:43:42 BRT 2016 --- run in 2:3:16 ---

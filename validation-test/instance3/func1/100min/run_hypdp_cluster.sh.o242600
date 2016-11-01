@@ -1,0 +1,9 @@
+Host --> libra
+Init Time: Seg Set 5 11:24:52 BRT 2016
+Seed: 16
+Instance: 3
+Time: 6000000
+Selection Function: RC * Ccurrent * Cava - Cr
+Starting HH framework with instance: 3 and seed: 16 and selectioFunction = RC * Ccurrent * Cava - Cr
+/var/spool/gridengine/execd/libra/job_scripts/242600: linha 36:  6307 Morto                   java -Xmx1G -Xms1G -jar hypdp-0.0.1-jar-with-dependencies.jar $1 $2 $3 "$4"
+End Time: Seg Set 5 11:28:41 BRT 2016 --- run in 0:3:49 ---
