@@ -304,6 +304,9 @@ public class CustomHH extends HyperHeuristic {
 				case Cr:
 					value = heuristicStatistics.getCr();
 					break;
+				case Random:
+					value = this.rng.nextDouble();
+					break;
 				default:
 					throw new RuntimeException("Unrecognized heuristic statistic: " + statistic);
 				}
@@ -392,7 +395,8 @@ substring.replace(" ", "")
 
 		acceptanceCriterion = acceptanceCriterion.replace("Delta", String.valueOf(delta))
 				.replace("PF", String.valueOf(currentFitness * -1)).replace("CF", String.valueOf(newFitness * -1))
-				.replace("CI", String.valueOf(currentIteration)).replace("TI", String.valueOf(totalNumberOfIteraction));
+				.replace("CI", String.valueOf(currentIteration)).replace("TI", String.valueOf(totalNumberOfIteraction))
+				.replace("Random", String.valueOf(this.rng.nextDouble()));
 
 		String input = acceptanceCriterion;
 		while (input.contains("(") && input.contains(")")) {
